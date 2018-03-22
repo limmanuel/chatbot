@@ -24,10 +24,11 @@
 			      <button class="waves-effect waves-green btn-flat">Add</button>
 		    </form>
 		    <div class="col">
-		    {{../curruser}}
 		    	{{#each ../curruser.pages}}
 		    		{{#each this.qnamaker.urls}}
-		    			{{url}}
+		    			{{#equal ../../index index}}
+		    			{{url}}<br>
+		    			{{/equal}}
 		    		{{/each}}
 		    	{{/each}}
 		    </div>
