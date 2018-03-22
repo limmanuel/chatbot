@@ -51,14 +51,16 @@ var ObjectID = require('mongodb').ObjectID;
 var mongoClient = require('mongodb').MongoClient;
 var url = 'mongodb://admin:admin@ds251988.mlab.com:51988/facebook';
 
+var port = process.env.port || 8082;
+
 mongoClient.connect(url, function(err, database){
   if(err){console.log(err);};
   db=database;
   User = db.collection('user');
   Page = db.collection('page');
 
-  app.listen(8082, function(){
-    console.log("Connected to port 8082");
+  app.listen(port, function(){
+    console.log("Connected to port: " + port);
   });
 });
 
