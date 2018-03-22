@@ -32,6 +32,6 @@
     "apiai": "*",
     "fb": "*",
     "mongodb": "*",
-    "mongoose": "*",
+    "mongoose": "*"
   }
 }
