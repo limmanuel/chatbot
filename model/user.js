@@ -75,3 +75,13 @@ module.exports.createQna = function(user_id, page_id, qnamaker, callback){
 		}
 	},callback);
 }
+
+module.exports.addQnaUrl = function(user_id, page_id, url, callback){
+	console.log("creating qna");
+	let query = {user_id: user_id, pages: {$elemMatch: {page_id: page_id}}};
+	User.update(query, {
+		$push: {
+			"pages.$.qnamaker.urls": url
+		}
+	},callback);
+}

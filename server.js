@@ -442,7 +442,7 @@ function sendTextMessage(sender, text, token) {
 
 
 function qnaMaker(event){
-  const kbId = "8b8d22e6-d648-4c8a-87ca-4d6c765ff4bb";
+  
   const senderId = event.sender.id;
   const message = event.message.text;
   const recipientId = event.recipient.id;
@@ -450,6 +450,8 @@ function qnaMaker(event){
     if(user.pages.length>0){
       user.pages.forEach(function(page){
         if(page.page_id == recipientId){
+          var kbId = page.qnamaker.kbid;
+          console.log(kbId);
           var body=[];
           console.log("Doing the Post Operations...");
           // Define an demo object with properties and values. This object will be used for POST request.
