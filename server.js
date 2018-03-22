@@ -106,80 +106,84 @@ app.get('/', require('connect-ensure-login').ensureLoggedIn(), function(req, res
   console.log('==================/================');
   if(req.user){
           console.log("eUser"+JSON.stringify(req.user.id));
-    FB.api("/"+req.user.id+"/accounts?fields=access_token,name,is_webhooks_subscribed", function (fbres) {
-      if(!fbres || fbres.error) {
-       console.log(!fbres ? 'error occurred' : fbres.error);
-       return;
-      }
-      console.log("=========logged in========");
-      //console.log(JSON.stringify(fbres));
-      Users.getUsers(function(err,userdb){
-        //console.log("userdb"+JSON.stringify(userdb));
-        if(userdb.length>0){
-          userdb.forEach(function(user){
-            //console.log("user"+user);
-            if(user){
-              if(user.user_id == req.user.id){ console.log("Already Exist: " + req.user.id)} else {
-                var newUser = new Users({
-                  user_id: req.user.id,
-                  user_name: req.user.displayName,
-                  access_token: FB.getAccessToken(),
-                  pages:[]
-                });
-                Users.newUser(newUser, function(err,status){});
+    Users.getUser(req.user.id, function(err, curruser){
+      FB.api("/"+req.user.id+"/accounts?fields=access_token,name,is_webhooks_subscribed", function (fbres) {
+        if(!fbres || fbres.error) {
+         console.log(!fbres ? 'error occurred' : fbres.error);
+         return;
+        }
+        console.log("=========logged in========");
+        //console.log(JSON.stringify(fbres));
+        Users.getUsers(function(err,userdb){
+          //console.log("userdb"+JSON.stringify(userdb));
+          if(userdb.length>0){
+            userdb.forEach(function(user){
+              //console.log("user"+user);
+              if(user){
+                if(user.user_id == req.user.id){ console.log("Already Exist: " + req.user.id)} else {
+                  var newUser = new Users({
+                    user_id: req.user.id,
+                    user_name: req.user.displayName,
+                    access_token: FB.getAccessToken(),
+                    pages:[]
+                  });
+                  Users.newUser(newUser, function(err,status){});
+                }
+                if(fbres.data.length>0){
+                  fbres.data.forEach(function(pages){
+                    Users.getUsersWithPage(pages.id, function(err, result){
+                      //console.log(result);
+                      if(result){} else {
+                        var page = {
+                          page_id: pages.id,
+                          page_name: pages.name,
+                          subscribed: pages.is_webhooks_subscribed,
+                          page_token: pages.access_token,
+                          qnamaker: {
+                            kbId: "",
+                            urls: []
+                          }
+                        }
+                        Users.addPage(req.user.id, page, function(err, data){});
+                      }
+                    });
+                  });
+                }
               }
+            });
+          } else {
+            console.log("wala2");
+            var newUser = new Users({
+              user_id: req.user.id,
+              user_name: req.user.displayName,
+              access_token: FB.getAccessToken(),
+              pages:[]
+
+            });
+            Users.newUser(newUser, function(err,status){
               if(fbres.data.length>0){
                 fbres.data.forEach(function(pages){
-                  Users.getUsersWithPage(pages.id, function(err, result){
-                    //console.log(result);
-                    if(result){} else {
-                      var page = {
-                        page_id: pages.id,
-                        page_name: pages.name,
-                        subscribed: pages.is_webhooks_subscribed,
-                        page_token: pages.access_token,
-                        qnamaker: {
-                          kbId: "",
-                          urls: []
-                        }
-                      }
-                      Users.addPage(req.user.id, page, function(err, data){});
+                  var page = {
+                    page_id: pages.id,
+                    page_name: pages.name,
+                    subscribed: pages.is_webhooks_subscribed,
+                    page_token: pages.access_token,
+                    qnamaker: {
+                      kbId: "",
+                      urls: []
                     }
-                  });
+                  }
+                  Users.addPage(req.user.id, page, function(err, data){});
                 });
               }
-            }
-          });
-        } else {
-          console.log("wala2");
-          var newUser = new Users({
-            user_id: req.user.id,
-            user_name: req.user.displayName,
-            access_token: FB.getAccessToken(),
-            pages:[]
+            });
+          }
+        });
 
-          });
-          Users.newUser(newUser, function(err,status){
-            if(fbres.data.length>0){
-              fbres.data.forEach(function(pages){
-                var page = {
-                  page_id: pages.id,
-                  page_name: pages.name,
-                  subscribed: pages.is_webhooks_subscribed,
-                  page_token: pages.access_token,
-                  qnamaker: {
-                    kbId: "",
-                    urls: []
-                  }
-                }
-                Users.addPage(req.user.id, page, function(err, data){});
-              });
-            }
-          });
-        }
+        res.render('home', { pages: fbres
+                            curruser: curruser,
+                            user: req.user});
       });
-      res.render('home', { pages: fbres,
-                          user: req.user});
     });
   } else {
     res.render('home');
@@ -274,7 +278,8 @@ app.post('/page', (req,res)=>{
               });
           });
       });
-    } else if(!(kbexist)){
+    } else if(kbexist==false){
+      console.log("CREATING NEW KB");
       request({
         uri:"https://westus.api.cognitive.microsoft.com/qnamaker/v2.0/knowledgebases/create",
         method: "POST",
