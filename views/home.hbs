@@ -25,9 +25,11 @@
 		    </form>
 		    <div class="col">
 		    	{{#each ../curruser.pages}}
-		    		{{#each this.qnamaker.urls}}
+		    		{{#equal ../id page_id}}
+		    			{{#each this.qnamaker.urls}}
 		    				{{url}}<br>
-		    		{{/each}}
+		    			{{/each}}
+		    		{{/equal}}
 		    	{{/each}}
 		    </div>
 		</div>
