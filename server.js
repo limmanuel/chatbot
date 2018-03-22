@@ -450,37 +450,41 @@ function qnaMaker(event){
     if(user.pages.length>0){
       user.pages.forEach(function(page){
         if(page.page_id == recipientId){
-          var kbId = page.qnamaker.kbid;
-          console.log(kbId);
-          var body=[];
-          console.log("Doing the Post Operations...");
-          // Define an demo object with properties and values. This object will be used for POST request.
+          if(page.qnamaker.kbid){
+            var kbId = page.qnamaker.kbid;
+            console.log(kbId);
+            var body=[];
+            console.log("Doing the Post Operations...");
+            // Define an demo object with properties and values. This object will be used for POST request.
 
-          var body=JSON.stringify({
-              "question": message,
-              "top": 1
-          });
+            var body=JSON.stringify({
+                "question": message,
+                "top": 1
+            });
 
-          request({
-            uri:"https://westus.api.cognitive.microsoft.com/qnamaker/v2.0/knowledgebases/"+kbId+"/generateAnswer",
-            method: "POST",
-            headers:{
-              'Ocp-Apim-Subscription-Key':'c0801266071945af97de95044add658a',
-              'Content-Type':'application/json'
-            },
-          body: body
-          }, function (error, response, body){
-            if (error) {
-              processMessage(event);
-            } else if (response.body.error) {
-              processMessage(event);
-            } else if(JSON.parse(response.body).answers[0].answer == "No good match found in the KB"){
-              processMessage(event);
-            } else {
-              console.log(response.body);
-              sendTextMessage(senderId, JSON.parse(response.body).answers[0].answer, page.page_token);
-            }
-          });
+            request({
+              uri:"https://westus.api.cognitive.microsoft.com/qnamaker/v2.0/knowledgebases/"+kbId+"/generateAnswer",
+              method: "POST",
+              headers:{
+                'Ocp-Apim-Subscription-Key':'c0801266071945af97de95044add658a',
+                'Content-Type':'application/json'
+              },
+            body: body
+            }, function (error, response, body){
+              if (error) {
+                processMessage(event);
+              } else if (response.body.error) {
+                processMessage(event);
+              } else if(JSON.parse(response.body).answers[0].answer == "No good match found in the KB"){
+                processMessage(event);
+              } else {
+                console.log(response.body);
+                sendTextMessage(senderId, JSON.parse(response.body).answers[0].answer, page.page_token);
+              }
+            });
+          } else {
+            processMessage(event);
+          }
         }
       });
     }
