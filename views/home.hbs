@@ -5,7 +5,7 @@
     <div class="col s12 m8 offset-m2 l6 offset-l3">
       <div class="card-panel grey lighten-5 z-depth-1">
         <div class="row valign-wrapper">
-        	<form method="POST" action="/subscribed">
+        	<form class="col" method="POST" action="/subscribed">
         		<input type="hidden" name="ids" value="{{this.id}}">
         		<input type="hidden" name="ats" value="{{access_token}}">
         		<input type="hidden" name="subs" value="{{is_webhooks_subscribed}}">
@@ -17,14 +17,14 @@
 							{{/if}}
 							</p>
         	</form>
-			  	<form method="POST" action="/page">
-				    	<input type="text" name="url" placeholder="Your Q&A URL">
-				    	<input type="hidden" name="idss" value="{{this.id}}">
-				    	<input type="hidden" name="name" value="{{this.name}}">
-				      <button class="waves-effect waves-green btn-flat">Add</button>
-			    </form>
-		    </div>
-		  </div>
+		  	<form class="col" method="POST" action="/page">
+			    	<input type="text" name="url" placeholder="Your Q&A URL">
+			    	<input type="hidden" name="idss" value="{{this.id}}">
+			    	<input type="hidden" name="name" value="{{this.name}}">
+			      <button class="waves-effect waves-green btn-flat">Add</button>
+		    </form>
+		</div>
+	  </div>
     </div>
 	{{/each}}
 	<a href="/profile">See Profile</a>
