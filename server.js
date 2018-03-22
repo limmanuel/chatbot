@@ -192,6 +192,7 @@ app.post('/page', (req,res)=>{
   // Define an demo object with properties and values. This object will be used for POST request.
   var url = req.body.url;
   var page_id = req.body.idss;
+  var user_id = req.user.id;
   var create=JSON.stringify({
     "name": req.body.name,
     "urls": [url]
@@ -213,7 +214,7 @@ app.post('/page', (req,res)=>{
           url: url
         }]
       };
-      Users.createQna(page_id, qna, function(err, data){
+      Users.createQna(user_id, page_id, qna, function(err, data){
         console.log(data);
       });
       console.log(kbId);
