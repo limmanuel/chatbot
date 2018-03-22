@@ -215,7 +215,8 @@ app.post('/page', (req,res)=>{
         });
       }
     });
-    if(kbexist && !(foundurl)){
+    console.log(foundurl + "===" + kbexist);
+    if(kbexist && !(foundurl) && kbIds!==""){
       var addurl = JSON.stringify({
         "add": {
           "urls": [qnaurl]
