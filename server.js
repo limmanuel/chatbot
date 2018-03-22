@@ -208,6 +208,8 @@ app.post('/page', (req,res)=>{
     body: create
   }, function (error, response, body){
       var kbId = JSON.parse(response.body).kbId;
+      console.log(JSON.parse(response.body));
+    if(kbId){
       var qna = {
         kbid: kbId,
         urls: [{
@@ -253,6 +255,7 @@ app.post('/page', (req,res)=>{
               console.log(response.body);
           });
       });
+    }
   });
   res.redirect("/");
 });
