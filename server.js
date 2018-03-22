@@ -236,7 +236,6 @@ app.post('/page', (req,res)=>{
         body: addurl
       }, function (error, response, body){
           console.log(response.body);
-          Users.addQnaUrl(user_id, page_id, {url: qnaurl}, function(err, done){});
           var train=[];
           console.log("Training QnA URL...");
           // Define an demo object with properties and values. This object will be used for POST request.
@@ -269,6 +268,7 @@ app.post('/page', (req,res)=>{
                 }
               }, function (error, response, body){
                   console.log(response.body);
+                  Users.addQnaUrl(user_id, page_id, {url: qnaurl}, function(err, done){});
               });
           });
       });
@@ -291,9 +291,6 @@ app.post('/page', (req,res)=>{
               url: qnaurl
             }]
           };
-          Users.createQna(user_id, page_id, qna, function(err, data){
-            console.log(data);
-          });
           console.log(kbId);
           var train=[];
           console.log("Training QnA URL...");
@@ -327,6 +324,9 @@ app.post('/page', (req,res)=>{
                 }
               }, function (error, response, body){
                   console.log(response.body);
+                  Users.createQna(user_id, page_id, qna, function(err, data){
+                    console.log(data);
+                  });
               });
           });
         }
