@@ -217,6 +217,7 @@ app.post('/page', (req,res)=>{
     });
     console.log(foundurl + "===" + kbexist);
     if(kbexist && !(foundurl) && kbIds!=""){
+      console.log(kbIds);
       var addurl = JSON.stringify({
         "add": {
           "urls": [qnaurl]
