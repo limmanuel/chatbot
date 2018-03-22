@@ -215,7 +215,7 @@ app.post('/page', (req,res)=>{
         });
       }
     });
-    if(kbexist && !(found)){
+    if(kbexist && !(foundurl)){
       var addurl = JSON.stringify({
         "add": {
           "urls": [qnaurl]
