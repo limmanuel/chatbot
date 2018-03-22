@@ -205,7 +205,7 @@ app.post('/page', (req,res)=>{
     user.pages.forEach(function(page){
       if(page.qnamaker.urls.length>0){
         page.qnamaker.urls.forEach(function(urls){
-          if(page.page_name == kbname){
+          if(page.qnamaker.kbid!="" || page.qnamaker.kbid || page.qnamaker.kbid!=null){
             kbexist = true;
           }
           if(urls.url==qnaurl){
@@ -216,7 +216,7 @@ app.post('/page', (req,res)=>{
       }
     });
     console.log(foundurl + "===" + kbexist);
-    if(kbexist && !(foundurl) && kbIds!==""){
+    if(kbexist && !(foundurl) && kbIds!=""){
       var addurl = JSON.stringify({
         "add": {
           "urls": [qnaurl]
