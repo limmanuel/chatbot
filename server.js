@@ -208,7 +208,7 @@ app.post('/page', (req,res)=>{
     body: create
   }, function (error, response, body){
       var kbId = JSON.parse(response.body).kbId;
-      console.log("CREATE KB.... "+JSON.parse(response.body));
+      console.log("CREATE KB.... "+JSON.stringify(JSON.parse(response.body)));
     if(kbId){
       var qna = {
         kbid: kbId,
