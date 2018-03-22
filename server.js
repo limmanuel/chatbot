@@ -190,14 +190,26 @@ app.post('/page', (req,res)=>{
   var create=[];
   console.log("Creating KB...");
   // Define an demo object with properties and values. This object will be used for POST request.
-  var url = req.body.url;
+  var qnaurl = req.body.url;
   var page_id = req.body.idss;
   var user_id = req.user.id;
   var create=JSON.stringify({
     "name": req.body.name,
-    "urls": [url]
+    "urls": [qnaurl]
   });
-
+  Users.getUsersWithPage(page_id, function(err, user){
+    var found = false;
+    user.pages.forEach(function(page){
+      if(page.qnamaker.urls){
+        page.qnamaker.urls.forEach(function(urls){
+          if(url==qnaurl){
+            found=true;
+          }
+        });
+      }
+    });
+    console.log(found);
+  });
   request({
     uri:"https://westus.api.cognitive.microsoft.com/qnamaker/v2.0/knowledgebases/create",
     method: "POST",
@@ -213,7 +225,7 @@ app.post('/page', (req,res)=>{
       var qna = {
         kbid: kbId,
         urls: [{
-          url: url
+          url: qnaurl
         }]
       };
       Users.createQna(user_id, page_id, qna, function(err, data){
