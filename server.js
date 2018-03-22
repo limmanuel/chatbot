@@ -180,7 +180,7 @@ app.get('/', require('connect-ensure-login').ensureLoggedIn(), function(req, res
           }
         });
 
-        res.render('home', { pages: fbres
+        res.render('home', { pages: fbres,
                             curruser: curruser,
                             user: req.user});
       });
