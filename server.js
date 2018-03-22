@@ -193,14 +193,19 @@ app.post('/page', (req,res)=>{
   var qnaurl = req.body.url;
   var page_id = req.body.idss;
   var user_id = req.user.id;
+  var kbname = req.body.name;
   var create=JSON.stringify({
-    "name": req.body.name,
+    "name": kbname,
     "urls": [qnaurl]
   });
   Users.getUser(user_id, function(err, user){
-    var found = false;
+    var foundurl = false;
+    var kbexist = false;
     var kbIds = "";
     user.pages.forEach(function(page){
+      if(page.page_name == kbname){
+        kbexist = true;
+      }
       if(page.qnamaker.urls){
         page.qnamaker.urls.forEach(function(urls){
           if(urls.url==qnaurl){
@@ -210,7 +215,7 @@ app.post('/page', (req,res)=>{
         });
       }
     });
-    if(found){
+    if(kbexist && !(found)){
       var addurl = JSON.stringify({
         "add": {
           "urls": [qnaurl]
@@ -262,7 +267,7 @@ app.post('/page', (req,res)=>{
               });
           });
       });
-    } else {
+    } else if(!(kbexist)){
       request({
         uri:"https://westus.api.cognitive.microsoft.com/qnamaker/v2.0/knowledgebases/create",
         method: "POST",
