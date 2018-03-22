@@ -203,19 +203,21 @@ app.post('/page', (req,res)=>{
     var kbexist = false;
     var kbIds = "";
     user.pages.forEach(function(page){
-      if(page.qnamaker.urls.length>0){
-        page.qnamaker.urls.forEach(function(urls){
-          if(page.qnamaker.kbid!="" || page.qnamaker.kbid || page.qnamaker.kbid!=null){
-            kbexist = true;
-            if(kbexist){
-              kbIds = page.qnamaker.kbid;
-              console.log(kbIds);
+      if(page.page_id == page_id){
+        if(page.qnamaker.urls.length>0){
+          page.qnamaker.urls.forEach(function(urls){
+            if(page.qnamaker.kbid!="" || page.qnamaker.kbid || page.qnamaker.kbid!=null){
+              kbexist = true;
+              if(kbexist){
+                kbIds = page.qnamaker.kbid;
+                console.log(kbIds);
+              }
             }
-          }
-          if(urls.url==qnaurl){
-            foundurl=true;
-          }
-        });
+            if(urls.url==qnaurl){
+              foundurl=true;
+            }
+          });
+        }
       }
     });
     console.log(foundurl + "===" + kbexist);
