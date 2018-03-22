@@ -68,7 +68,7 @@ module.exports.getUsersWithPage = function(page_id, callback){
 }
 module.exports.createQna = function(user_id, page_id, qnamaker, callback){
 	console.log("creating qna");
-	let query = {user_id: user_id, "pages.page_id": page_id};
+	let query = {user_id: user_id, pages: {$elemMatch: {page_id: page_id}}};
 	User.update(query, {
 		$set: {
 			"pages.$.qnamaker": qnamaker
