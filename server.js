@@ -209,7 +209,7 @@ app.post('/page', (req,res)=>{
             kbexist = true;
           }
           if(urls.url==qnaurl){
-            found=true;
+            foundurl=true;
             kbIds = page.qnamaker.kbid;
           }
         });
