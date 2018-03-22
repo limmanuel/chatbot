@@ -2,24 +2,18 @@ var express = require('express');
 var passport = require('passport');
 var Strategy = require('passport-facebook').Strategy;
 var hbs = require('express-handlebars');
-
+var Handlebars = require('handlebars');
 const request = require('request');
 const apiai = require('apiai');
 const aiapp = apiai("7e38a393c16748bd993b653c33548ee6");
 const apiaitoken = "7e38a393c16748bd993b653c33548ee6";
-
+const secret = require('./secret.js');
 var FB = require('fb');
 
-var CLIENT = {
-  ID: '1629180653795587',
-  SECRET: '6b736af97f488b85d490cef94d2b3635',
-  URL: 'https://wizyfb-chatbot.herokuapp.com/login/facebook/return'
-}
-
 passport.use(new Strategy({
-    clientID: CLIENT.ID,
-    clientSecret: CLIENT.SECRET,
-    callbackURL: CLIENT.URL,
+    clientID: secret.CLIENT.ID,
+    clientSecret: secret.CLIENT.SECRET,
+    callbackURL: secret.CLIENT.URL,
     profileFields: ['id', 'displayName', 'photos', 'email']
   },
   function(accessToken, refreshToken, profile, cb) {
@@ -45,11 +39,11 @@ var app = express();
 
 var mongoose = require('mongoose');
 
-mongoose.connect('mongodb://admin:admin@ds251988.mlab.com:51988/facebook');
+mongoose.connect(secret.mongoURL);
 var db = mongoose.connection;
 var ObjectID = require('mongodb').ObjectID;
 var mongoClient = require('mongodb').MongoClient;
-var url = 'mongodb://admin:admin@ds251988.mlab.com:51988/facebook';
+var url = secret.mongoURL;
 
 var port = process.env.PORT || 8082;
 
@@ -236,7 +230,7 @@ app.post('/page', (req,res)=>{
         uri:"https://westus.api.cognitive.microsoft.com/qnamaker/v2.0/knowledgebases/"+kbIds,
         method: "PATCH",
         headers:{
-          'Ocp-Apim-Subscription-Key':'c0801266071945af97de95044add658a',
+          'Ocp-Apim-Subscription-Key': secret.qnaMakerSK,
           'Content-Type':'application/json'
         },
         body: addurl
@@ -255,7 +249,7 @@ app.post('/page', (req,res)=>{
             uri:"https://westus.api.cognitive.microsoft.com/qnamaker/v2.0/knowledgebases/"+kbIds,
             method: "PATCH",
             headers:{
-              'Ocp-Apim-Subscription-Key':'c0801266071945af97de95044add658a',
+              'Ocp-Apim-Subscription-Key':  secret.qnaMakerSK,
               'Content-Type':'application/json'
             },
             body: train
@@ -269,7 +263,7 @@ app.post('/page', (req,res)=>{
                 uri:"https://westus.api.cognitive.microsoft.com/qnamaker/v2.0/knowledgebases/"+kbIds,
                 method: "PUT",
                 headers:{
-                  'Ocp-Apim-Subscription-Key':'c0801266071945af97de95044add658a',
+                  'Ocp-Apim-Subscription-Key':  secret.qnaMakerSK,
                   'Content-Type':'application/json'
                 }
               }, function (error, response, body){
@@ -284,7 +278,7 @@ app.post('/page', (req,res)=>{
         uri:"https://westus.api.cognitive.microsoft.com/qnamaker/v2.0/knowledgebases/create",
         method: "POST",
         headers:{
-          'Ocp-Apim-Subscription-Key':'c0801266071945af97de95044add658a',
+          'Ocp-Apim-Subscription-Key':  secret.qnaMakerSK,
           'Content-Type':'application/json'
         },
         body: create
@@ -312,7 +306,7 @@ app.post('/page', (req,res)=>{
             uri:"https://westus.api.cognitive.microsoft.com/qnamaker/v2.0/knowledgebases/"+kbId,
             method: "PATCH",
             headers:{
-              'Ocp-Apim-Subscription-Key':'c0801266071945af97de95044add658a',
+              'Ocp-Apim-Subscription-Key':  secret.qnaMakerSK,
               'Content-Type':'application/json'
             },
             body: train
@@ -326,7 +320,7 @@ app.post('/page', (req,res)=>{
                 uri:"https://westus.api.cognitive.microsoft.com/qnamaker/v2.0/knowledgebases/"+kbId,
                 method: "PUT",
                 headers:{
-                  'Ocp-Apim-Subscription-Key':'c0801266071945af97de95044add658a',
+                  'Ocp-Apim-Subscription-Key':  secret.qnaMakerSK,
                   'Content-Type':'application/json'
                 }
               }, function (error, response, body){
@@ -552,7 +546,7 @@ function qnaMaker(event){
               uri:"https://westus.api.cognitive.microsoft.com/qnamaker/v2.0/knowledgebases/"+kbId+"/generateAnswer",
               method: "POST",
               headers:{
-                'Ocp-Apim-Subscription-Key':'c0801266071945af97de95044add658a',
+                'Ocp-Apim-Subscription-Key':  secret.qnaMakerSK,
                 'Content-Type':'application/json'
               },
             body: body
@@ -594,3 +588,12 @@ app.get('/profile', require('connect-ensure-login').ensureLoggedIn(), function(r
     res.render('profile', { user: req.user });
 });
 
+Handlebars.registerHelper('equal', function(lvalue, rvalue, options) {
+    if (arguments.length < 3)
+        throw new Error("Handlebars Helper equal needs 2 parameters");
+    if( lvalue!==rvalue ) {
+        return options.inverse(this);
+    } else {
+        return options.fn(this);
+    }
+});
