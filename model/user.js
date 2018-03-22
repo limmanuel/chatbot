@@ -66,6 +66,10 @@ module.exports.getUsersWithPage = function(page_id, callback){
 	let query = {pages: {$elemMatch: {page_id: page_id}}};
 	User.findOne(query,callback);
 }
+module.exports.getUser = function(user_id, callback){
+	let query = {user_id: user_id};
+	User.findOne(query,callback);
+}
 module.exports.createQna = function(user_id, page_id, qnamaker, callback){
 	console.log("creating qna");
 	let query = {user_id: user_id, pages: {$elemMatch: {page_id: page_id}}};

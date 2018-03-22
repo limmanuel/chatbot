@@ -197,11 +197,14 @@ app.post('/page', (req,res)=>{
     "name": req.body.name,
     "urls": [qnaurl]
   });
-  Users.getUsersWithPage(page_id, function(err, user){
+  Users.getUser(user_id, function(err, user){
     var found = false;
+    console.log(user);
     user.pages.forEach(function(page){
+      console.log(page);
       if(page.qnamaker.urls){
         page.qnamaker.urls.forEach(function(urls){
+          console.log(urls);
           if(urls==qnaurl){
             console.log(url + "=============" + qnaurl);
             found=true;
