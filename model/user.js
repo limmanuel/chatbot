@@ -73,5 +73,5 @@ module.exports.createQna = function(user_id, page_id, qnamaker, callback){
 		$set: {
 			"pages.$.qnamaker": qnamaker
 		}
-	})
+	},callback);
 }
