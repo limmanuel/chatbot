@@ -205,7 +205,7 @@ app.post('/page', (req,res)=>{
       if(page.qnamaker.urls){
         page.qnamaker.urls.forEach(function(urls){
           console.log(urls);
-          if(urls==qnaurl){
+          if(urls.url==qnaurl){
             console.log(url + "=============" + qnaurl);
             found=true;
           }
