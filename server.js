@@ -203,6 +203,7 @@ app.post('/page', (req,res)=>{
       if(page.qnamaker.urls){
         page.qnamaker.urls.forEach(function(urls){
           if(url==qnaurl){
+            console.log(url + "=============" + qnaurl);
             found=true;
           }
         });
