@@ -207,10 +207,13 @@ app.post('/page', (req,res)=>{
         page.qnamaker.urls.forEach(function(urls){
           if(page.qnamaker.kbid!="" || page.qnamaker.kbid || page.qnamaker.kbid!=null){
             kbexist = true;
+            if(kbexist){
+              kbIds = page.qnamaker.kbid;
+              console.log(kbIds);
+            }
           }
           if(urls.url==qnaurl){
             foundurl=true;
-            kbIds = page.qnamaker.kbid;
           }
         });
       }
