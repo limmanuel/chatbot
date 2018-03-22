@@ -203,7 +203,7 @@ app.post('/page', (req,res)=>{
     var kbexist = false;
     var kbIds = "";
     user.pages.forEach(function(page){
-      if(page.qnamaker.urls){
+      if(page.qnamaker.urls.length>0){
         page.qnamaker.urls.forEach(function(urls){
           if(page.page_name == kbname){
             kbexist = true;
