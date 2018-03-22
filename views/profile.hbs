@@ -1,0 +1,11 @@
+<p>
+<a href="/">home</a><br>
+ID: {{user.id}}<br/>
+Username: {{user.username}}<br/>
+Name: {{user.displayName}}<br/>
+{{#if user.emails}}
+Email: {{#each user.emails}}
+	{{this}}<br/>
+{{/each}}
+{{/if}}
+</p>
