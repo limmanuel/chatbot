@@ -586,7 +586,10 @@ app.get('/login/facebook/return', passport.authenticate('facebook', { failureRed
   console.log('===================return===============');
   res.redirect("/"+req.user.id+"/");
 });
-
+app.get('/:userid/logout', function(req, res) {
+  req.logout(); 
+  res.redirect('/');
+});
 app.get('/:userid/profile', require('connect-ensure-login').ensureLoggedIn(), function(req, res){
   console.log(req.user);
     res.render('profile', { user: req.user });
