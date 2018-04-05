@@ -395,7 +395,7 @@ app.get('/dashboard/:userid/details/:pageid', require('connect-ensure-login').en
 app.post('/dashboard/:userid/message', function(req,res){
   var pageid = req.body.idss;
   var message = req.body.message;
-  Users.getUsersWithPage(pageid, function(err, user){
+  Users.getUser(req.params.userid, function(err, user){
     if(user.pages.length>0){
       user.pages.forEach(function(page){
         if(page.page_id == pageid){
