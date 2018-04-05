@@ -584,6 +584,7 @@ app.get('/login/facebook', passport.authenticate('facebook', { scope: ['manage_p
 
 app.get('/login/facebook/return', passport.authenticate('facebook', { failureRedirect: '/' }),function(req, res) {
   console.log('===================return===============');
+  console.log(req);
   res.redirect("/"+req.user.id+"/");
 });
 app.get('/:userid/logout', function(req, res) {
