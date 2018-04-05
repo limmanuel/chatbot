@@ -113,6 +113,7 @@ app.get('/dashboard/:userid', require('connect-ensure-login').ensureLoggedIn(), 
            console.log(!picture ? 'error occurred' : picture.error);
            return;
           }
+          console.log(picture);
           console.log("=========logged in========");
           console.log(req.user.id +" "+req.params.userid);
           console.log(fbres);
