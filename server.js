@@ -108,6 +108,7 @@ app.get('/dashboard/:userid', require('connect-ensure-login').ensureLoggedIn(), 
          console.log(!fbres ? 'error occurred' : fbres.error);
          return;
         }
+        console.log(req.user._json)
         console.log("=========logged in========");
         console.log(req.user.id +" "+req.params.userid);
         console.log(fbres);
