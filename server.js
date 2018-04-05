@@ -94,7 +94,7 @@ let Users = require('./model/user.js');
 
 
 app.get('/', function(req,res){
-    res.render('home');
+    res.render('login');
 })
 
 // Define routes.
@@ -108,47 +108,52 @@ app.get('/dashboard/:userid', require('connect-ensure-login').ensureLoggedIn(), 
          console.log(!fbres ? 'error occurred' : fbres.error);
          return;
         }
-        console.log("=========logged in========");
-        console.log(req.user.id +" "+req.params.userid);
-        console.log(fbres);
-        //console.log(JSON.stringify(fbres));
-        Users.getUsers(function(err,userdb){
-          //console.log("userdb"+JSON.stringify(userdb));
-          if(userdb.length>0){
-            var exist = false;
-            userdb.forEach(function(user){
-              //console.log("user"+user);
-              if(user){
-                if(user.user_id == req.user.id){ exist=true; console.log("Already Exist: " + req.user.id)} 
-              }
-            });
-            if(!(exist)) {
-              var newUser = new Users({
-                user_id: req.user.id,
-                user_name: req.user.displayName,
-                access_token: FB.getAccessToken(),
-                pages:[]
+        FB.api("/"+req.params.userid+"/accounts?fields=access_token,name,is_webhooks_subscribed", function (picture) {
+          if(!picture || picture.error) {
+           console.log(!picture ? 'error occurred' : picture.error);
+           return;
+          }
+          console.log("=========logged in========");
+          console.log(req.user.id +" "+req.params.userid);
+          console.log(fbres);
+          //console.log(JSON.stringify(fbres));
+          Users.getUsers(function(err,userdb){
+            //console.log("userdb"+JSON.stringify(userdb));
+            if(userdb.length>0){
+              var exist = false;
+              userdb.forEach(function(user){
+                //console.log("user"+user);
+                if(user){
+                  if(user.user_id == req.user.id){ exist=true; console.log("Already Exist: " + req.user.id)} 
+                }
               });
-              Users.newUser(newUser, function(err,status){});
-            }
-            if(fbres.data.length>0){
-              fbres.data.forEach(function(pages){
-                Users.getUsersWithPage(pages.id, function(err, result){
-                  //console.log(result);
-                  if(result){} else {
-                    var page = {
-                      page_id: pages.id,
-                      page_name: pages.name,
-                      subscribed: pages.is_webhooks_subscribed,
-                      page_token: pages.access_token,
-                      qnamaker: {
-                        kbId: "",
-                        urls: []
-                      }
-                    }
-                    Users.addPage(req.user.id, page, function(err, data){});
-                  }
+              if(!(exist)) {
+                var newUser = new Users({
+                  user_id: req.user.id,
+                  user_name: req.user.displayName,
+                  access_token: FB.getAccessToken(),
+                  pages:[]
                 });
+                Users.newUser(newUser, function(err,status){});
+              }
+              if(fbres.data.length>0){
+                fbres.data.forEach(function(pages){
+                  Users.getUsersWithPage(pages.id, function(err, result){
+                    //console.log(result);
+                    if(result){} else {
+                      var page = {
+                        page_id: pages.id,
+                        page_name: pages.name,
+                        subscribed: pages.is_webhooks_subscribed,
+                        page_token: pages.access_token,
+                        qnamaker: {
+                          kbId: "",
+                          urls: []
+                        }
+                      }
+                      Users.addPage(req.user.id, page, function(err, data){});
+                    }
+                  });
               });
             }
           } else {
@@ -179,13 +184,15 @@ app.get('/dashboard/:userid', require('connect-ensure-login').ensureLoggedIn(), 
             });
           }
         });
-
         res.render('home', { pages: fbres,
+                            picture: picture.url,
                             curruser: curruser,
                             user: req.user});
+        });
       });
     });
   } else {
+    req.logout();
     res.render('home');
   }
 });
@@ -507,6 +514,7 @@ function processMessage(event){
   });
 };
 
+
 function sendTextMessage(sender, text, token) {
   let messageData = { text:text }
   request({
@@ -579,7 +587,7 @@ function qnaMaker(event){
 
 app.get('/login', function(req, res){
   console.log('==================login================');
-  res.render('home');
+  res.render('login');
 });
 
 app.get('/login/facebook', passport.authenticate('facebook', { scope: ['manage_pages', 'pages_messaging', 'pages_messaging_subscriptions'] }));

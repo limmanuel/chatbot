@@ -39,11 +39,14 @@
 	{{/each}}
 	<a href="/profile/{{user.id}}">See Profile</a>
 {{else}}
-  <div class="col s12 m8 offset-m2 l6 offset-l3">
-    <div class="card-panel grey lighten-5 z-depth-1">
-      <div class="row valign-wrapper">
-				<a class="col s6 offset-s3 btn btn-primary blue" href="/login/facebook">Login to Facebook</a>
-      </div>
+	<div class="col s12 m8 offset-m2 l6 offset-l3">
+	<div class="card-panel z-depth-0">
+    <div class="row valign-wrapper center-align">
+		<h1 class="col s12">FAQ Bot Builder</h1>
     </div>
-  </div>
+    <div class="row valign-wrapper">
+		<a class="col s6 offset-s3 btn btn-primary blue" href="/login/facebook">Login to Facebook</a>
+    </div>
+</div>
+</div>
 {{/if}}
