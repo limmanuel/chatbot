@@ -6,10 +6,8 @@
 	{{#each pages.data}}
   <div class="col s6 m6 l4">
     <div class="card horizontal">
-      <div class="card-image">
-        <img class="circle" src="{{this.picture.data.url}}">
-      </div>
-      <div class="card-stacked">
+      <div class="card-content row">
+        <img class="circle col" src="{{this.picture.data.url}}">
       	<form class="col" method="POST" action="/{{../user.id}}/subscribed">
         	<div class="card-content">
         		<h4>{{this.name}}</h4>
@@ -28,7 +26,10 @@
       </div>
     </div>
   </div>
-							  	<form class="col" method="POST" action="/{{../user.id}}/page">
+							  	
+	{{/each}}
+</div>
+<form class="col" method="POST" action="/{{../user.id}}/page">
 								    	<input type="text" name="url" placeholder="Your Q&A URL" required>
 								    	<input type="hidden" name="idss" value="{{this.id}}">
 								    	<input type="hidden" name="name" value="{{this.name}}">
@@ -38,13 +39,11 @@
 							    	{{#each ../curruser.pages}}
 							    		{{#equal ../id page_id}}
 							    			{{#each this.qnamaker.urls}}
-							    				<input type="text" name="{{ids}}">{{ids}} {{url}}
+							    				<input type="text" name="{{id}}" value="{{url}}">{{id}}
 							    			{{/each}}
 							    		{{/equal}}
 							    	{{/each}}
 							    </div>
-	{{/each}}
-</div>
 	<a href="/profile/{{user.id}}">See Profile</a>
 {{else}}
 	<div class="col s12 m8 offset-m2 l6 offset-l3">
