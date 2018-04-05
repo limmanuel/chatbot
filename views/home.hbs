@@ -14,11 +14,11 @@
       		<input type="hidden" name="ats" value="{{access_token}}">
       		<input type="hidden" name="subs" value="{{is_webhooks_subscribed}}">
 		    </div>
-      	<div class="card-action">
+      	<div class="row card-action">
 					{{#if this.is_webhooks_subscribed}}
-					<button class="btn red s12">UnSubscribe</button><br>
+					<button class="btn red col s12">UnSubscribe</button><br>
 					{{else}}
-					<button class="btn green s12">Subscribe</button><br>
+					<button class="btn green col s12">Subscribe</button><br>
 					{{/if}}
       	</div>
       </form>
