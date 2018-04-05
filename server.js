@@ -98,7 +98,7 @@ app.get('/', function(req,res){
 })
 
 // Define routes.
-app.get('/:userid', require('connect-ensure-login').ensureLoggedIn(), function(req, res) {
+app.get('/dashboard/:userid', require('connect-ensure-login').ensureLoggedIn(), function(req, res) {
   console.log('==================/================');
   if(req.user){
           console.log("eUser"+JSON.stringify(req.query.userid));
@@ -338,7 +338,7 @@ app.post('/:userid/page', (req,res)=>{
       });
     }
   });
-  res.redirect("/"+req.user.id);
+  res.redirect("/dashboard/"+req.user.id);
 });
 
 app.post('/:userid/subscribed', require('connect-ensure-login').ensureLoggedIn(), function(req, res) {
@@ -366,7 +366,7 @@ app.post('/:userid/subscribed', require('connect-ensure-login').ensureLoggedIn()
         console.log('Error: ', response.body.error)
       }
   });
-  res.redirect("/"+req.user.id);
+  res.redirect("/dashboard/"+req.user.id);
 });
 
 
@@ -585,13 +585,13 @@ app.get('/login/facebook', passport.authenticate('facebook', { scope: ['manage_p
 app.get('/login/facebook/return', passport.authenticate('facebook', { failureRedirect: '/' }),function(req, res) {
   console.log('===================return===============');
   console.log(req.user);
-  res.redirect("/"+req.user.id);
+  res.redirect("/dashboard/"+req.user.id);
 });
-app.get('/:userid/logout', function(req, res) {
+app.get('/:page/:userid/logout', function(req, res) {
   req.logout(); 
   res.redirect('/');
 });
-app.get('/:userid/profile', require('connect-ensure-login').ensureLoggedIn(), function(req, res){
+app.get('/profile/:userid', require('connect-ensure-login').ensureLoggedIn(), function(req, res){
   console.log(req.user);
     res.render('profile', { user: req.user });
 });
