@@ -100,10 +100,10 @@ app.get('/', function(req,res){
 // Define routes.
 app.get('/:userid/', require('connect-ensure-login').ensureLoggedIn(), function(req, res) {
   console.log('==================/================');
-  if(req.user){
+  if(req.user.id == req.query.id){
           console.log("eUser"+JSON.stringify(req.user.id));
     Users.getUser(req.query.userid, function(err, curruser){
-      FB.api("/"+req.user.id+"/accounts?fields=access_token,name,is_webhooks_subscribed", function (fbres) {
+      FB.api("/"+req.query.userid+"/accounts?fields=access_token,name,is_webhooks_subscribed", function (fbres) {
         if(!fbres || fbres.error) {
          console.log(!fbres ? 'error occurred' : fbres.error);
          return;
@@ -582,7 +582,7 @@ app.get('/login', function(req, res){
 
 app.get('/login/facebook', passport.authenticate('facebook', { scope: ['manage_pages', 'pages_messaging', 'pages_messaging_subscriptions'] }));
 
-app.get('/login/facebook/return', passport.authenticate('facebook', { failureRedirect: '/login' }),function(req, res) {
+app.get('/login/facebook/return', passport.authenticate('facebook', { failureRedirect: '/' }),function(req, res) {
   console.log('===================return===============');
   res.redirect("/"+req.user.id+"/");
 });
