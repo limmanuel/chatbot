@@ -101,9 +101,9 @@ app.get('/', function(req,res){
 app.get('/dashboard/:userid', require('connect-ensure-login').ensureLoggedIn(), function(req, res) {
   console.log('==================/================');
   if(req.user){
-          console.log("eUser"+JSON.stringify(req.query.userid));
-    Users.getUser(req.query.userid, function(err, curruser){
-      FB.api("/"+req.user.id+"/accounts?fields=access_token,name,is_webhooks_subscribed", function (fbres) {
+          console.log("eUser"+JSON.stringify(req.params.userid));
+    Users.getUser(req.params.userid, function(err, curruser){
+      FB.api("/"+req.params.userid+"/accounts?fields=access_token,name,is_webhooks_subscribed", function (fbres) {
         if(!fbres || fbres.error) {
          console.log(!fbres ? 'error occurred' : fbres.error);
          return;
@@ -200,7 +200,7 @@ app.post('/:userid/page', (req,res)=>{
     "name": kbname,
     "urls": [qnaurl]
   });
-  Users.getUser(req.query.userid, function(err, user){
+  Users.getUser(req.params.userid, function(err, user){
     var foundurl = false;
     var kbexist = false;
     var kbIds = "";
