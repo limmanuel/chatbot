@@ -6,24 +6,22 @@
 	{{#each pages.data}}
   <div class="col s6 m6 l4">
     <div class="card horizontal">
-      <div class="card-content row">
-        <img class="circle col s4" src="{{this.picture.data.url}}">
-      	<form class="col s7" method="POST" action="/{{../user.id}}/subscribed">
-        	<div class="card-content">
-        		<h4>{{this.name}}</h4>
-        		<input type="hidden" name="ids" value="{{this.id}}">
-        		<input type="hidden" name="ats" value="{{access_token}}">
-        		<input type="hidden" name="subs" value="{{is_webhooks_subscribed}}">
-        	</div>
-        	<div class="card-action">
-						{{#if this.is_webhooks_subscribed}}
-						<button class="btn red">UnSubscribe</button><br>
-						{{else}}
-						<button class="btn green">Subscribe</button><br>
-						{{/if}}
-        	</div>
-        </form>
-      </div>
+     	<form method="POST" action="/{{../user.id}}/subscribed">
+		    <div class="card-content row">
+		      <img class="circle col s4" src="{{this.picture.data.url}}">
+      		<h4 class="s8">{{this.name}}</h4>
+      		<input type="hidden" name="ids" value="{{this.id}}">
+      		<input type="hidden" name="ats" value="{{access_token}}">
+      		<input type="hidden" name="subs" value="{{is_webhooks_subscribed}}">
+		    </div>
+      	<div class="card-action">
+					{{#if this.is_webhooks_subscribed}}
+					<button class="btn red">UnSubscribe</button><br>
+					{{else}}
+					<button class="btn green">Subscribe</button><br>
+					{{/if}}
+      	</div>
+      </form>
     </div>
   </div>
 							  	
