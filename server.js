@@ -98,12 +98,12 @@ app.get('/', function(req,res){
 })
 
 // Define routes.
-app.get('/:userid/', require('connect-ensure-login').ensureLoggedIn(), function(req, res) {
+app.get('/:userid', require('connect-ensure-login').ensureLoggedIn(), function(req, res) {
   console.log('==================/================');
   if(req.user){
-          console.log("eUser"+JSON.stringify(req.user.id));
+          console.log("eUser"+JSON.stringify(req.query.userid));
     Users.getUser(req.query.userid, function(err, curruser){
-      FB.api("/"+req.query.userid+"/accounts?fields=access_token,name,is_webhooks_subscribed", function (fbres) {
+      FB.api("/"+req.user.id+"/accounts?fields=access_token,name,is_webhooks_subscribed", function (fbres) {
         if(!fbres || fbres.error) {
          console.log(!fbres ? 'error occurred' : fbres.error);
          return;
@@ -338,7 +338,7 @@ app.post('/:userid/page', (req,res)=>{
       });
     }
   });
-  res.redirect("/"+req.user.id+"/");
+  res.redirect("/"+req.user.id);
 });
 
 app.post('/:userid/subscribed', require('connect-ensure-login').ensureLoggedIn(), function(req, res) {
@@ -366,7 +366,7 @@ app.post('/:userid/subscribed', require('connect-ensure-login').ensureLoggedIn()
         console.log('Error: ', response.body.error)
       }
   });
-  res.redirect("/"+req.user.id+"/");
+  res.redirect("/"+req.user.id);
 });
 
 
@@ -577,7 +577,7 @@ function qnaMaker(event){
 
 app.get('/login', function(req, res){
   console.log('==================login================');
-  res.render('login');
+  res.render('home');
 });
 
 app.get('/login/facebook', passport.authenticate('facebook', { scope: ['manage_pages', 'pages_messaging', 'pages_messaging_subscriptions'] }));
@@ -585,7 +585,7 @@ app.get('/login/facebook', passport.authenticate('facebook', { scope: ['manage_p
 app.get('/login/facebook/return', passport.authenticate('facebook', { failureRedirect: '/' }),function(req, res) {
   console.log('===================return===============');
   console.log(req.user);
-  res.redirect("/"+req.user.id+"/");
+  res.redirect("/"+req.user.id);
 });
 app.get('/:userid/logout', function(req, res) {
   req.logout(); 
