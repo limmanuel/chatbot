@@ -100,7 +100,7 @@ app.get('/:userid/', require('connect-ensure-login').ensureLoggedIn(), function(
   console.log('==================/================');
   if(req.user){
           console.log("eUser"+JSON.stringify(req.user.id));
-    Users.getUser(req.user.id, function(err, curruser){
+    Users.getUser(req.query.userid, function(err, curruser){
       FB.api("/"+req.user.id+"/accounts?fields=access_token,name,is_webhooks_subscribed", function (fbres) {
         if(!fbres || fbres.error) {
          console.log(!fbres ? 'error occurred' : fbres.error);
@@ -198,7 +198,7 @@ app.post('/:userid/page', (req,res)=>{
     "name": kbname,
     "urls": [qnaurl]
   });
-  Users.getUser(user_id, function(err, user){
+  Users.getUser(req.query.userid, function(err, user){
     var foundurl = false;
     var kbexist = false;
     var kbIds = "";
