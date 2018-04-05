@@ -181,9 +181,10 @@ app.get('/dashboard/:userid', require('connect-ensure-login').ensureLoggedIn(), 
         });
 
         res.render('home', { pages: fbres,
-                            curruser: curruser,
-                            user: req.user
-                            userJSON: JSON.stringify(req.user)});
+          curruser: curruser,
+          user: req.user,
+          userJSON: JSON.stringify(req.user)
+        });
       });
     });
   } else {
