@@ -8,7 +8,7 @@
     <div class="card horizontal">
      	<form method="POST" action="/{{../user.id}}/subscribed">
 		    <div class="card-content row">
-		      <img class="circle col s4" src="{{this.picture.data.url}}">
+		      <img class="circle col s4" width="100%" src="{{this.picture.data.url}}">
       		<h4 class="s8">{{this.name}}</h4>
       		<input type="hidden" name="ids" value="{{this.id}}">
       		<input type="hidden" name="ats" value="{{access_token}}">
