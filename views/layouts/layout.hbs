@@ -30,9 +30,9 @@
   <ul id="slide-out" class="sidenav">
     <li><div class="user-view">
       <div class="background">
-        <img src="{{user._json.picture.url}}">
+        <img src="{{user._json.picture.data.url}}">
       </div>
-      <a href="#user"><img class="circle" src="{{user._json.picture.url}}"></a>
+      <a href="#user"><img class="circle" src="{{user._json.picture.data.url}}"></a>
       <a href="#name"><span class="white-text name">John Doe</span></a>
       <a href="#email"><span class="white-text email">jdandturk@gmail.com</span></a>
     </div></li>
@@ -42,7 +42,7 @@
     <li><a class="subheader">Subheader</a></li>
     <li><a class="waves-effect" href="#!">Third Link With Waves</a></li>
   </ul>
-  {{user._json.picture.url}}
+  {{user._json.picture.data.url}}
   {{/if}}
 </head>
 <body>
