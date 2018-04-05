@@ -100,7 +100,7 @@ app.get('/', function(req,res){
 // Define routes.
 app.get('/:userid/', require('connect-ensure-login').ensureLoggedIn(), function(req, res) {
   console.log('==================/================');
-  if(req.user.id == req.query.id){
+  if(req.user){
           console.log("eUser"+JSON.stringify(req.user.id));
     Users.getUser(req.query.userid, function(err, curruser){
       FB.api("/"+req.query.userid+"/accounts?fields=access_token,name,is_webhooks_subscribed", function (fbres) {
