@@ -93,7 +93,9 @@ let Users = require('./model/user.js');
 
 
 
-
+app.get('/', function(req,res){
+    res.render('home');
+})
 
 // Define routes.
 app.get('/:userid/', require('connect-ensure-login').ensureLoggedIn(), function(req, res) {
