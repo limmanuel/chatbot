@@ -108,7 +108,7 @@ app.get('/dashboard/:userid', require('connect-ensure-login').ensureLoggedIn(), 
          console.log(!fbres ? 'error occurred' : fbres.error);
          return;
         }
-        FB.api("/"+req.params.userid+"/accounts?fields=access_token,name,is_webhooks_subscribed", function (picture) {
+        FB.api("/"+req.params.userid+"/picture", function (picture) {
           if(!picture || picture.error) {
            console.log(!picture ? 'error occurred' : picture.error);
            return;
