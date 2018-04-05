@@ -3,7 +3,7 @@
 <a href="/dashboard/{{user.id}}/logout">Logout</a>
 <br><br>
 	{{#each pages.data}}
-  <div class="col s12 m7">
+  <div class="col s6 m6 l4">
     <div class="card horizontal">
       <div class="card-image">
         <img class="circle" src="{{this.picture.data.url}}">
@@ -11,7 +11,7 @@
       <div class="card-stacked">
       	<form class="col" method="POST" action="/{{../user.id}}/subscribed">
         	<div class="card-content">
-        		<h3>{{this.name}}</h3>
+        		<h4>{{this.name}}</h4>
         		<input type="hidden" name="ids" value="{{this.id}}">
         		<input type="hidden" name="ats" value="{{access_token}}">
         		<input type="hidden" name="subs" value="{{is_webhooks_subscribed}}">
