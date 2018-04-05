@@ -101,7 +101,7 @@ app.get('/', function(req,res){
 app.get('/dashboard/:userid', require('connect-ensure-login').ensureLoggedIn(), function(req, res) {
   console.log('==================/================');
   if(req.user){
-          console.log("eUser"+JSON.stringify(req.params.userid));
+          console.log("eUser"+req.params.userid);
     Users.getUser(req.params.userid, function(err, curruser){
       FB.api("/"+req.params.userid+"/accounts?fields=access_token,name,is_webhooks_subscribed", function (fbres) {
         if(!fbres || fbres.error) {
@@ -110,6 +110,7 @@ app.get('/dashboard/:userid', require('connect-ensure-login').ensureLoggedIn(), 
         }
         console.log("=========logged in========");
         console.log(req.user.id +" "+req.params.userid);
+        console.log(fbres);
         //console.log(JSON.stringify(fbres));
         Users.getUsers(function(err,userdb){
           //console.log("userdb"+JSON.stringify(userdb));
