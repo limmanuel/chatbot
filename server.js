@@ -374,6 +374,9 @@ app.post('/:userid/subscribed', require('connect-ensure-login').ensureLoggedIn()
   res.redirect("/dashboard/"+req.user.id);
 });
 
+app.get('/page/:pageid', function(req,res){
+  res.render('page');
+});
 
 app.get('/webhook/', (req, res) => {
   console.log("Verify");

@@ -31,7 +31,7 @@
   <ul id="slide-out" class="side-nav">
     <li><div class="user-view">
       <div class="background">
-        <img src="https://banknxt.com/wp-content/uploads/2016/11/Bank-of-America%E2%80%99s-new-chatbot-is-a-higher-form-of-intelligence-810x405.png">
+        <img width="100%" src="https://banknxt.com/wp-content/uploads/2016/11/Bank-of-America%E2%80%99s-new-chatbot-is-a-higher-form-of-intelligence-810x405.png">
       </div>
       <a href="#!user"><img class="circle" src="{{user._json.picture.data.url}}"></a>
       <a href="#!name"><span class="white-text name">{{curruser.user_name}}</span></a>\
@@ -56,6 +56,7 @@
 </script>
 </body>
 <footer class="blue darken-1 page-footer" style="right:0;bottom:0;left:0;width:100%;">
+  {{#if user}}
   <div class="container">
     <div class="row">
       <div class="col l6 s12">
@@ -73,6 +74,7 @@
       </div>
     </div>
   </div>
+  {{/if}}
   <div class="footer-copyright">
     <div class="container">
     © 2014 Copyright Text
