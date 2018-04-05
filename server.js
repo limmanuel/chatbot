@@ -376,7 +376,7 @@ app.post('/:userid/subscribed', require('connect-ensure-login').ensureLoggedIn()
 
 app.get('/page/:pageid', require('connect-ensure-login').ensureLoggedIn(), function(req,res){
   Users.getUser(req.user.id, function(err, curruser){
-    FB.api("/"+req.params.pageid+"?fields=name,is_webhooks_subscribed,picture", function (page) {
+    FB.api("/"+req.params.pageid, function (page) {
       if(!page || page.error) {
        console.log(!page ? 'error occurred' : page.error);
        return;
