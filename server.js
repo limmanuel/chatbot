@@ -108,53 +108,47 @@ app.get('/dashboard/:userid', require('connect-ensure-login').ensureLoggedIn(), 
          console.log(!fbres ? 'error occurred' : fbres.error);
          return;
         }
-        FB.api("/"+req.params.userid+"/picture", function (picture) {
-          if(!picture || picture.error) {
-           console.log(!picture ? 'error occurred' : picture.error);
-           return;
-          }
-          console.log(picture);
-          console.log("=========logged in========");
-          console.log(req.user.id +" "+req.params.userid);
-          console.log(fbres);
-          //console.log(JSON.stringify(fbres));
-          Users.getUsers(function(err,userdb){
-            //console.log("userdb"+JSON.stringify(userdb));
-            if(userdb.length>0){
-              var exist = false;
-              userdb.forEach(function(user){
-                //console.log("user"+user);
-                if(user){
-                  if(user.user_id == req.user.id){ exist=true; console.log("Already Exist: " + req.user.id)} 
-                }
-              });
-              if(!(exist)) {
-                var newUser = new Users({
-                  user_id: req.user.id,
-                  user_name: req.user.displayName,
-                  access_token: FB.getAccessToken(),
-                  pages:[]
-                });
-                Users.newUser(newUser, function(err,status){});
+        console.log("=========logged in========");
+        console.log(req.user.id +" "+req.params.userid);
+        console.log(fbres);
+        //console.log(JSON.stringify(fbres));
+        Users.getUsers(function(err,userdb){
+          //console.log("userdb"+JSON.stringify(userdb));
+          if(userdb.length>0){
+            var exist = false;
+            userdb.forEach(function(user){
+              //console.log("user"+user);
+              if(user){
+                if(user.user_id == req.user.id){ exist=true; console.log("Already Exist: " + req.user.id)} 
               }
-              if(fbres.data.length>0){
-                fbres.data.forEach(function(pages){
-                  Users.getUsersWithPage(pages.id, function(err, result){
-                    //console.log(result);
-                    if(result){} else {
-                      var page = {
-                        page_id: pages.id,
-                        page_name: pages.name,
-                        subscribed: pages.is_webhooks_subscribed,
-                        page_token: pages.access_token,
-                        qnamaker: {
-                          kbId: "",
-                          urls: []
-                        }
+            });
+            if(!(exist)) {
+              var newUser = new Users({
+                user_id: req.user.id,
+                user_name: req.user.displayName,
+                access_token: FB.getAccessToken(),
+                pages:[]
+              });
+              Users.newUser(newUser, function(err,status){});
+            }
+            if(fbres.data.length>0){
+              fbres.data.forEach(function(pages){
+                Users.getUsersWithPage(pages.id, function(err, result){
+                  //console.log(result);
+                  if(result){} else {
+                    var page = {
+                      page_id: pages.id,
+                      page_name: pages.name,
+                      subscribed: pages.is_webhooks_subscribed,
+                      page_token: pages.access_token,
+                      qnamaker: {
+                        kbId: "",
+                        urls: []
                       }
-                      Users.addPage(req.user.id, page, function(err, data){});
                     }
-                  });
+                    Users.addPage(req.user.id, page, function(err, data){});
+                  }
+                });
               });
             }
           } else {
@@ -185,11 +179,10 @@ app.get('/dashboard/:userid', require('connect-ensure-login').ensureLoggedIn(), 
             });
           }
         });
+
         res.render('home', { pages: fbres,
-                            picture: picture.url,
                             curruser: curruser,
                             user: req.user});
-        });
       });
     });
   } else {
