@@ -109,6 +109,7 @@ app.get('/dashboard/:userid', require('connect-ensure-login').ensureLoggedIn(), 
          return;
         }
         console.log("=========logged in========");
+        console.log(fbres);
         //console.log(JSON.stringify(fbres));
         Users.getUsers(function(err,userdb){
           //console.log("userdb"+JSON.stringify(userdb));
