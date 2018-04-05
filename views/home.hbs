@@ -42,6 +42,8 @@
 		  	<input type="hidden" name="name" value="{{page.name}}">
 		    <button class="col offset-s8 waves-effect waves-green btn-flat">Send</button>
 			</form>
+			Question: {{../question}}<br>
+			Answer: {{../answer}}<br>
 			<div class="col">
 				{{#each curruser.pages}}
 					{{#equal ../page.id page_id}}
