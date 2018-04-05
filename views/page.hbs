@@ -3,11 +3,10 @@
 		<div class="card-content">
 	    <img class="circle col s4" width="100%" src="{{page.picture.data.url}}">
   		<h5 class="col s8">{{this.name}}</h5>
-  		<input type="hidden" name="ats" value="{{page.access_token}}">
-  		<input type="hidden" name="subs" value="{{page.is_webhooks_subscribed}}">
   		<a href=""></a>
 			<form class="col" method="POST" action="/{{user.id}}/page">
 		  	<input type="text" name="url" placeholder="Your Q&A URL" required>
+  		<input type="hidden" name="subs" value="{{page.is_webhooks_subscribed}}">
 		  	<input type="hidden" name="idss" value="{{page.id}}">
 		  	<input type="hidden" name="name" value="{{page.name}}">
 		    <button class="waves-effect waves-green btn-flat">Add</button>
