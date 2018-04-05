@@ -374,8 +374,8 @@ app.post('/:userid/subscribed', require('connect-ensure-login').ensureLoggedIn()
   res.redirect("/dashboard/"+req.user.id);
 });
 
-app.get('/page/:pageid', require('connect-ensure-login').ensureLoggedIn(), function(req,res){
-  Users.getUser(req.user.id, function(err, curruser){
+app.get('/dashboard/:userid/details/:pageid', require('connect-ensure-login').ensureLoggedIn(), function(req,res){
+  Users.getUser(req.params.userid, function(err, curruser){
     FB.api("/"+req.params.pageid, function (page) {
       if(!page || page.error) {
        console.log(!page ? 'error occurred' : page.error);
