@@ -375,7 +375,19 @@ app.post('/:userid/subscribed', require('connect-ensure-login').ensureLoggedIn()
 });
 
 app.get('/page/:pageid', function(req,res){
-  res.render('page');
+  Users.getUser(req.users.id, function(user){
+    var currpage={};
+    user.pages.forEach(function(page){
+      if(page.page_id == req.params.pageid){
+        currpage = page;
+      }
+    });
+    console.log(JSON.stringify(currpage));
+    res.render('page', {
+      user: req.user,
+      page: currpage
+    });
+  });
 });
 
 app.get('/webhook/', (req, res) => {
