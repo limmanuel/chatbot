@@ -3,39 +3,45 @@
 <a href="/dashboard/{{user.id}}/logout">Logout</a>
 <br><br>
 	{{#each pages.data}}
-    <div class="col s6 m6 l4">
-      <div class="card-panel grey lighten-5 z-depth-1">
-        <div class="row valign-wrapper">
-        	<form class="col" method="POST" action="/{{../user.id}}/subscribed">
+  <div class="col s12 m7">
+    <div class="card horizontal">
+      <div class="card-image">
+        <img class="circle" src="{{this.picture.data.url}}">
+      </div>
+      <div class="card-stacked">
+      	<form class="col" method="POST" action="/{{../user.id}}/subscribed">
+        	<div class="card-content">
+        		<h3>{{this.name}}</h3>
         		<input type="hidden" name="ids" value="{{this.id}}">
         		<input type="hidden" name="ats" value="{{access_token}}">
         		<input type="hidden" name="subs" value="{{is_webhooks_subscribed}}">
-							<br><p>{{this.name}}
-							{{#if this.is_webhooks_subscribed}}
-							<button class="btn red">UnSubscribe</button><br>
-							{{else}}
-							<button class="btn green">Subscribe</button><br>
-							{{/if}}
-							</p>
-        	</form>
-		  	<form class="col" method="POST" action="/{{../user.id}}/page">
-			    	<input type="text" name="url" placeholder="Your Q&A URL" required>
-			    	<input type="hidden" name="idss" value="{{this.id}}">
-			    	<input type="hidden" name="name" value="{{this.name}}">
-			      <button class="waves-effect waves-green btn-flat">Add</button>
-		    </form>
-		    <div class="col">
-		    	{{#each ../curruser.pages}}
-		    		{{#equal ../id page_id}}
-		    			{{#each this.qnamaker.urls}}
-		    				<input type="text" name="{{ids}}">{{ids}} {{url}}
-		    			{{/each}}
-		    		{{/equal}}
-		    	{{/each}}
-		    </div>
-		</div>
-	  </div>
+        	</div>
+        	<div class="card-action">
+						{{#if this.is_webhooks_subscribed}}
+						<button class="btn red">UnSubscribe</button><br>
+						{{else}}
+						<button class="btn green">Subscribe</button><br>
+						{{/if}}
+        	</div>
+        </form>
+      </div>
     </div>
+  </div>
+							  	<form class="col" method="POST" action="/{{../user.id}}/page">
+								    	<input type="text" name="url" placeholder="Your Q&A URL" required>
+								    	<input type="hidden" name="idss" value="{{this.id}}">
+								    	<input type="hidden" name="name" value="{{this.name}}">
+								      <button class="waves-effect waves-green btn-flat">Add</button>
+							    </form>
+							    <div class="col">
+							    	{{#each ../curruser.pages}}
+							    		{{#equal ../id page_id}}
+							    			{{#each this.qnamaker.urls}}
+							    				<input type="text" name="{{ids}}">{{ids}} {{url}}
+							    			{{/each}}
+							    		{{/equal}}
+							    	{{/each}}
+							    </div>
 	{{/each}}
 	<a href="/profile/{{user.id}}">See Profile</a>
 {{else}}

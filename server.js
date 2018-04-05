@@ -103,12 +103,11 @@ app.get('/dashboard/:userid', require('connect-ensure-login').ensureLoggedIn(), 
   if(req.user){
           console.log("eUser"+req.params.userid);
     Users.getUser(req.params.userid, function(err, curruser){
-      FB.api("/"+req.params.userid+"/accounts?fields=access_token,name,is_webhooks_subscribed", function (fbres) {
+      FB.api("/"+req.params.userid+"/accounts?fields=access_token,name,is_webhooks_subscribed,picture", function (fbres) {
         if(!fbres || fbres.error) {
          console.log(!fbres ? 'error occurred' : fbres.error);
          return;
         }
-        console.log(req.user._json)
         console.log("=========logged in========");
         console.log(req.user.id +" "+req.params.userid);
         console.log(fbres);
