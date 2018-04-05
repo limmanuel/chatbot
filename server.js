@@ -96,7 +96,7 @@ let Users = require('./model/user.js');
 
 
 // Define routes.
-app.get('/', require('connect-ensure-login').ensureLoggedIn(), function(req, res) {
+app.get('/:userid/', require('connect-ensure-login').ensureLoggedIn(), function(req, res) {
   console.log('==================/================');
   if(req.user){
           console.log("eUser"+JSON.stringify(req.user.id));
@@ -186,7 +186,7 @@ app.get('/', require('connect-ensure-login').ensureLoggedIn(), function(req, res
   }
 });
 
-app.post('/page', (req,res)=>{
+app.post('/:userid/page', (req,res)=>{
   var create=[];
   console.log("Creating KB...");
   // Define an demo object with properties and values. This object will be used for POST request.
@@ -336,10 +336,10 @@ app.post('/page', (req,res)=>{
       });
     }
   });
-  res.redirect("/");
+  res.redirect("/"+req.user.id+"/");
 });
 
-app.post('/subscribed', require('connect-ensure-login').ensureLoggedIn(), function(req, res) {
+app.post('/:userid/subscribed', require('connect-ensure-login').ensureLoggedIn(), function(req, res) {
   console.log('==================/subscribed/================');
   var subs = true;
   if(req.body.subs=="true"){
@@ -364,7 +364,7 @@ app.post('/subscribed', require('connect-ensure-login').ensureLoggedIn(), functi
         console.log('Error: ', response.body.error)
       }
   });
-  res.redirect("/");
+  res.redirect("/"+req.user.id+"/");
 });
 
 
@@ -582,10 +582,10 @@ app.get('/login/facebook', passport.authenticate('facebook', { scope: ['manage_p
 
 app.get('/login/facebook/return', passport.authenticate('facebook', { failureRedirect: '/login' }),function(req, res) {
   console.log('===================return===============');
-  res.redirect('/');
+  res.redirect("/"+req.user.id+"/");
 });
 
-app.get('/profile', require('connect-ensure-login').ensureLoggedIn(), function(req, res){
+app.get('/:userid/profile', require('connect-ensure-login').ensureLoggedIn(), function(req, res){
   console.log(req.user);
     res.render('profile', { user: req.user });
 });
