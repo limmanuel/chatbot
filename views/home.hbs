@@ -27,8 +27,8 @@
   <!-- Modal Structure -->
   <div id="{{this.id}}" class="modal modal-fixed-footer">
     <div class="modal-content">
-      <img class="circle col s4" width="100%" src="{{this.picture.data.url}}">
-  		<h4 class="col s8">{{this.name}}</h4>
+      <img class="circle col" width="100px" src="{{this.picture.data.url}}">
+  		<h4 class="col">{{this.name}}</h4>
 			<form class="col" method="POST" action="/{{user.id}}/page">
 		  	<input type="text" name="url" placeholder="Your Q&A URL" required>
   			<input type="hidden" name="subs" value="{{page.is_webhooks_subscribed}}">
