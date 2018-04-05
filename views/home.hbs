@@ -2,6 +2,7 @@
 {{#if user}}
 <a href="/dashboard/{{user.id}}/logout">Logout</a>
 <br><br>
+<div class="row">
 	{{#each pages.data}}
   <div class="col s6 m6 l4">
     <div class="card horizontal">
@@ -43,6 +44,7 @@
 							    	{{/each}}
 							    </div>
 	{{/each}}
+</div>
 	<a href="/profile/{{user.id}}">See Profile</a>
 {{else}}
 	<div class="col s12 m8 offset-m2 l6 offset-l3">
