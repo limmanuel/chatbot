@@ -374,7 +374,7 @@ app.post('/:userid/subscribed', require('connect-ensure-login').ensureLoggedIn()
   res.redirect("/dashboard/"+req.user.id);
 });
 
-app.get('/page/:pageid', function(req,res){
+app.get('/page/:pageid', require('connect-ensure-login').ensureLoggedIn(), function(req,res){
   Users.getUser(req.user.id, function(err, curruser){
     FB.api("/"+req.params.pageid+"?fields=access_token,name,is_webhooks_subscribed,picture", function (page) {
       if(!page || page.error) {
