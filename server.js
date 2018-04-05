@@ -117,36 +117,36 @@ app.get('/', require('connect-ensure-login').ensureLoggedIn(), function(req, res
               if(user){
                 if(user.user_id == req.user.id){ exist=true; console.log("Already Exist: " + req.user.id)} 
               }
-              if(!(exist)) {
-                var newUser = new Users({
-                  user_id: req.user.id,
-                  user_name: req.user.displayName,
-                  access_token: FB.getAccessToken(),
-                  pages:[]
-                });
-                Users.newUser(newUser, function(err,status){});
-              }
-              if(fbres.data.length>0){
-                fbres.data.forEach(function(pages){
-                  Users.getUsersWithPage(pages.id, function(err, result){
-                    //console.log(result);
-                    if(result){} else {
-                      var page = {
-                        page_id: pages.id,
-                        page_name: pages.name,
-                        subscribed: pages.is_webhooks_subscribed,
-                        page_token: pages.access_token,
-                        qnamaker: {
-                          kbId: "",
-                          urls: []
-                        }
-                      }
-                      Users.addPage(req.user.id, page, function(err, data){});
-                    }
-                  });
-                });
-              }
             });
+            if(!(exist)) {
+              var newUser = new Users({
+                user_id: req.user.id,
+                user_name: req.user.displayName,
+                access_token: FB.getAccessToken(),
+                pages:[]
+              });
+              Users.newUser(newUser, function(err,status){});
+            }
+            if(fbres.data.length>0){
+              fbres.data.forEach(function(pages){
+                Users.getUsersWithPage(pages.id, function(err, result){
+                  //console.log(result);
+                  if(result){} else {
+                    var page = {
+                      page_id: pages.id,
+                      page_name: pages.name,
+                      subscribed: pages.is_webhooks_subscribed,
+                      page_token: pages.access_token,
+                      qnamaker: {
+                        kbId: "",
+                        urls: []
+                      }
+                    }
+                    Users.addPage(req.user.id, page, function(err, data){});
+                  }
+                });
+              });
+            }
           } else {
             console.log("wala2");
             var newUser = new Users({
