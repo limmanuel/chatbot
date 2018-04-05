@@ -183,7 +183,9 @@ app.get('/dashboard/:userid', require('connect-ensure-login').ensureLoggedIn(), 
         res.render('home', { pages: fbres,
           curruser: curruser,
           user: req.user,
-          userJSON: JSON.stringify(req.user)
+          userJSON: JSON.stringify(req.user),
+          question: req.query.question,
+          answer: req.query.answer
         });
       });
     });
@@ -387,6 +389,46 @@ app.get('/dashboard/:userid/details/:pageid', require('connect-ensure-login').en
         page: page
       });
     });
+  });
+});
+
+app.post('/dashboard/:userid/message', function(req,res){
+  var pageid = req.body.idss;
+  var message = req.body.message;
+  Users.getUsersWithPage(pageid, function(err, user){
+    if(user.pages.length>0){
+      user.pages.forEach(function(page){
+        if(page.page_id == pageid){
+          if(page.qnamaker.kbid){
+            var kbId = page.qnamaker.kbid;
+            console.log(kbId);
+            var body=[];
+            console.log("Doing the Post Operations...");
+            // Define an demo object with properties and values. This object will be used for POST request.
+
+            var body=JSON.stringify({
+                "question": message,
+                "top": 1
+            });
+
+            request({
+              uri:"https://westus.api.cognitive.microsoft.com/qnamaker/v2.0/knowledgebases/"+kbId+"/generateAnswer",
+              method: "POST",
+              headers:{
+                'Ocp-Apim-Subscription-Key':  secret.qnaMakerSK,
+                'Content-Type':'application/json'
+              },
+            body: body
+            }, function (error, response, body){
+              console.log(response.body);
+              req.redirect('/dashboard/'+req.params.userid+'?question='+message+',answer='+JSON.parse(response.body).answers[0].answer);
+            });
+          } else {
+            req.redirect('/dashboard/'+req.params.userid+'?question='+message+',answer="No QnA Url"');
+          }
+        }
+      });
+    }
   });
 });
 
