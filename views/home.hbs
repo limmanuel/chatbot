@@ -3,62 +3,29 @@
 <br><br>
 <div class="row">
 	{{#each pages.data}}
-  <div class="col s6 m6 l4">
-    <div class="card horizontal">
+  <div class="col">
+    <div class="card horizontal page" style="width: 300px">
      	<form method="POST" action="/{{../user.id}}/subscribed">
 		    <div class="card-content row">
 		      <img class="circle col s4" width="100%" src="{{this.picture.data.url}}">
-      		<h5 class="col s8">{{this.name}}</h5>
-      		<input type="hidden" name="ids" value="{{this.id}}">
-      		<input type="hidden" name="ats" value="{{access_token}}">
-      		<input type="hidden" name="subs" value="{{is_webhooks_subscribed}}">
+		      <div class="col s8">
+	      		<h5>{{this.name}}</h5>
+	      		<input type="hidden" name="ids" value="{{this.id}}">
+	      		<input type="hidden" name="ats" value="{{access_token}}">
+	      		<input type="hidden" name="subs" value="{{is_webhooks_subscribed}}">
+      		</div>
 		    </div>
       	<div class="row card-action">
 					{{#if this.is_webhooks_subscribed}}
-					<a class="btn modal-trigger col s12" href="#{{this.id}}">View Details</a><br>
+					<a class="btn col s12" href="/dashboard/{{../user.id}}/page/{{this.id}}">View Details</a><br>
+					<!--a class="btn modal-trigger col s12" href="#{{this.id}}">View Details</a><br-->
 					{{else}}
 					<button class="btn blue col s12">Connect to Facebook</button><br>
 					{{/if}}
       	</div>
       </form>
     </div>
-  </div>
-
-  <!-- Modal Structure -->
-  <div id="{{this.id}}" class="modal modal-fixed-footer">
-    <div class="modal-content">
-      <img class="circle col" width="100px" src="{{this.picture.data.url}}">
-  		<h4 class="col">{{this.name}}</h4>
-			<form class="row" method="POST" action="/{{user.id}}/page">
-		  	<input class="col s8" type="text" name="url" placeholder="Your Q&A URL" required>
-  			<input type="hidden" name="subs" value="{{page.is_webhooks_subscribed}}">
-		  	<input type="hidden" name="idss" value="{{page.id}}">
-		  	<input type="hidden" name="name" value="{{page.name}}">
-		    <button class="col offset-s8 waves-effect waves-green btn-flat">Add</button>
-			</form>
-			<form class="row" method="POST" action="/dashboard/{{../user.id}}/message">
-		  	<input class="col s8" type="text" name="message" placeholder="Sample Question" required>
-		  	<input type="hidden" name="idss" value="{{page.id}}">
-		  	<input type="hidden" name="name" value="{{page.name}}">
-		    <button class="col offset-s8 waves-effect waves-green btn-flat">Send</button>
-			</form>
-			Question: {{../question}}<br>
-			Answer: {{../answer}}<br>
-			<div class="col">
-				{{#each curruser.pages}}
-					{{#equal ../page.id page_id}}
-						{{#each this.qnamaker.urls}}
-							<input type="text" name="{{id}}" value="{{url}}">{{id}}
-						{{/each}}
-					{{/equal}}
-				{{/each}}
-			</div>
-    </div>
-    <div class="modal-footer">
-      <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat ">Close</a>
-    </div>
-  </div>
-							  	
+  </div>		  	
 	{{/each}}
 </div>
 	<a href="/profile/{{user.id}}">See Profile</a>
