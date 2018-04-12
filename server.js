@@ -738,7 +738,7 @@ app.get('/settings/:userid', require('connect-ensure-login').ensureLoggedIn(), f
        console.log(!user ? 'error occurred' : user.error);
        return;
       }
-      res.render('profile', {
+      res.render('settings', {
         user: req.user,
         curruser:curruser,
         fbuser: user
