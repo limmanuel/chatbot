@@ -119,21 +119,17 @@ app.get('/dashboard/:userid', require('connect-ensure-login').ensureLoggedIn(), 
   if(req.user){
           console.log("eUser"+req.params.userid);
     Users.getUser(req.params.userid, function(err, curruser){
-      FB.api("/"+req.params.userid+"/accounts?fields=access_token,name,is_webhooks_subscribed,picture", function (fbres) {
+      FB.api("/"+req.params.userid+"/accounts?fields=access_token,name,is_webhooks_subscribed,picture,cover,about", function (fbres) {
         if(!fbres || fbres.error) {
          console.log(!fbres ? 'error occurred' : fbres.error);
          return;
         }
         console.log("=========logged in========");
         console.log(req.user.id +" "+req.params.userid);
-        console.log(fbres);
-        //console.log(JSON.stringify(fbres));
         Users.getUsers(function(err,userdb){
-          //console.log("userdb"+JSON.stringify(userdb));
           if(userdb.length>0){
             var exist = false;
             userdb.forEach(function(user){
-              //console.log("user"+user);
               if(user){
                 if(user.user_id == req.user.id){ exist=true; console.log("Already Exist: " + req.user.id)} 
               }
@@ -150,7 +146,6 @@ app.get('/dashboard/:userid', require('connect-ensure-login').ensureLoggedIn(), 
             if(fbres.data.length>0){
               fbres.data.forEach(function(pages){
                 Users.getUsersWithPage(pages.id, function(err, result){
-                  //console.log(result);
                   if(result){} else {
                     var page = {
                       page_id: pages.id,
@@ -168,7 +163,6 @@ app.get('/dashboard/:userid', require('connect-ensure-login').ensureLoggedIn(), 
               });
             }
           } else {
-            console.log("wala2");
             var newUser = new Users({
               user_id: req.user.id,
               user_name: req.user.displayName,
@@ -215,7 +209,7 @@ app.get('/dashboard/:userid/page/:pageid', require('connect-ensure-login').ensur
   if(req.user){
           console.log("eUser"+req.params.userid);
     Users.getUser(req.params.userid, function(err, curruser){
-      FB.api("/"+req.params.userid+"/accounts?fields=access_token,name,is_webhooks_subscribed,picture", function (fbres) {
+      FB.api("/"+req.params.userid+"/accounts?fields=access_token,name,is_webhooks_subscribed,picture,cover,about", function (fbres) {
         if(!fbres || fbres.error) {
          console.log(!fbres ? 'error occurred' : fbres.error);
          return;
@@ -437,202 +431,164 @@ app.post('/dashboard/:userid/page/:pageid/url', (req,res)=>{
 
 
 app.post('/dashboard/:userid/page/:pageid/pair', (req,res)=>{
-  if(req.body.lasturl=='none'){
-    var create=[];
-    console.log("Creating KB...");
-    // Define an demo object with properties and values. This object will be used for POST request.
-    var qnaquestion = req.body.question;
-    var qnaanswer = req.body.answer;
-    var page_id = req.body.idss;
-    var user_id = req.user.id;
-    var kbname = req.body.name;
-    var create=JSON.stringify({
-      "name": kbname,
-      "qnaPairs": [
-        {"answer": qnaanswer,
-        "question": qnaquestion}
-      ]
-    });
-    Users.getUser(req.params.userid, function(err, user){
-      var foundurl = false;
-      var kbexist = false;
-      var kbIds = "";
-      user.pages.forEach(function(page){
-        if(page.page_id == page_id){
-          if(page.qnamaker.urls.length>0){
-            page.qnamaker.urls.forEach(function(urls){
-              if(page.qnamaker.kbid!="" || page.qnamaker.kbid || page.qnamaker.kbid!=null){
-                kbexist = true;
-                if(kbexist){
-                  kbIds = page.qnamaker.kbid;
-                  console.log(kbIds);
-                }
+  console.log("Creating KB...");
+  // Define an demo object with properties and values. This object will be used for POST request.
+  var qnaquestion = req.body.question;
+  var qnaanswer = req.body.answer;
+  var page_id = req.body.idss;
+  var user_id = req.user.id;
+  var kbname = req.body.name;
+  var create=[];
+  Users.getUser(req.params.userid, function(err, user){
+    var foundurl = false;
+    var kbexist = false;
+    var kbIds = "";
+    user.pages.forEach(function(page){
+      if(page.page_id == page_id){
+        if(page.qnamaker.urls.length>0){
+          page.qnamaker.urls.forEach(function(urls){
+            if(page.qnamaker.kbid!="" || page.qnamaker.kbid || page.qnamaker.kbid!=null){
+              kbexist = true;
+              if(kbexist){
+                kbIds = page.qnamaker.kbid;
+                console.log(kbIds);
               }
-              if(urls.url==qnaurl){
-                foundurl=true;
-              }
-            });
-          }
+            }
+            if(urls.url==qnaurl){
+              foundurl=true;
+            }
+          });
         }
+      }
+    });
+    console.log(foundurl + "===" + kbexist);
+    if(kbexist==false){
+      console.log("CREATING NEW KB");
+      var create=JSON.stringify({
+        "name": kbname,
+        "qnaPairs": [
+          {"answer": qnaanswer,
+          "question": qnaquestion}
+        ]
       });
-      console.log(foundurl + "===" + kbexist);
-      if(kbexist==false){
-        console.log("CREATING NEW KB");
-        request({
-          uri:"https://westus.api.cognitive.microsoft.com/qnamaker/v2.0/knowledgebases/create",
-          method: "POST",
-          headers:{
-            'Ocp-Apim-Subscription-Key':  secret.qnaMakerSK,
-            'Content-Type':'application/json'
-          },
-          body: create
-        }, function (error, response, body){
-            var kbId = JSON.parse(response.body).kbId;
-            console.log("CREATE KB.... "+JSON.stringify(JSON.parse(response.body)));
-          if(kbId){
-            var qna = {
-              kbid: kbId,
-              urls: [{
-                url: qnaurl
-              }]
-            };
-            console.log(kbId);
-            var train=[];
-            console.log("Training QnA URL...");
+      request({
+        uri:"https://westus.api.cognitive.microsoft.com/qnamaker/v2.0/knowledgebases/create",
+        method: "POST",
+        headers:{
+          'Ocp-Apim-Subscription-Key':  secret.qnaMakerSK,
+          'Content-Type':'application/json'
+        },
+        body: create
+      }, function (error, response, body){
+        var kbId = JSON.parse(response.body).kbId;
+        if(kbId){
+          console.log(kbId);
+          var train=[];
+          console.log("Training QnA URL...");
+          // Define an demo object with properties and values. This object will be used for POST request.
+          var train=JSON.stringify({
+            "feedbackRecords": [{
+              "userId": "1","userQuestion": "hi","kbQuestion": "Hi","kbAnswer": "Hello"
+            }]
+          });
+          request({
+            uri:"https://westus.api.cognitive.microsoft.com/qnamaker/v2.0/knowledgebases/"+kbId,
+            method: "PATCH",
+            headers:{
+              'Ocp-Apim-Subscription-Key':  secret.qnaMakerSK,
+              'Content-Type':'application/json'
+            },
+            body: train
+          }, function (error, response, body){
+            console.log(response.body);
+            console.log("Publishing QnA URL...");
             // Define an demo object with properties and values. This object will be used for POST request.
-
-            var train=JSON.stringify({
-              "feedbackRecords": [{
-                "userId": "1","userQuestion": "hi","kbQuestion": "Hi","kbAnswer": "Hello"
-              }]
-            });
             request({
               uri:"https://westus.api.cognitive.microsoft.com/qnamaker/v2.0/knowledgebases/"+kbId,
-              method: "PATCH",
+              method: "PUT",
               headers:{
                 'Ocp-Apim-Subscription-Key':  secret.qnaMakerSK,
                 'Content-Type':'application/json'
-              },
-              body: train
+              }
             }, function (error, response, body){
-                console.log(response.body);
-                console.log("Publishing QnA URL...");
-                // Define an demo object with properties and values. This object will be used for POST request.
-
-
-                request({
-                  uri:"https://westus.api.cognitive.microsoft.com/qnamaker/v2.0/knowledgebases/"+kbId,
-                  method: "PUT",
-                  headers:{
-                    'Ocp-Apim-Subscription-Key':  secret.qnaMakerSK,
-                    'Content-Type':'application/json'
-                  }
-                }, function (error, response, body){
-                    console.log(response.body);
-                    Users.createQna(user_id, page_id, qna, function(err, data){
-                      res.redirect("/dashboard/"+req.user.id+"/page/"+req.params.pageid);
-                    });
-                });
+              console.log(response.body);
+              var qna = {
+                kbid: kbId,
+                url:[],
+                qnaPairs: [{
+                  answer: qnaanswer,
+                  question: qnaquestion
+                }]
+              };
+              Users.createQnaPair(user_id, page_id, qna, function(err, data){
+                res.redirect("/dashboard/"+req.user.id+"/page/"+req.params.pageid);
+              });
             });
-          }
-        });
-      }
-    });
-
-  } else {
-
-    var create=[];
-    console.log("Adding url...");
-    // Define an demo object with properties and values. This object will be used for POST request.
-    var qnaurl = req.body.url;
-    var page_id = req.body.idss;
-    var user_id = req.user.id;
-    var kbname = req.body.name;
-    var lasturl = req.body.lasturl;
-    Users.getUser(req.params.userid, function(err, user){
-      var foundurl = false;
-      var kbexist = false;
-      var kbIds = "";
-      user.pages.forEach(function(page){
-        if(page.page_id == page_id){
-          if(page.qnamaker.urls.length>0){
-            page.qnamaker.urls.forEach(function(urls){
-              if(page.qnamaker.kbid!="" || page.qnamaker.kbid || page.qnamaker.kbid!=null){
-                kbexist = true;
-                if(kbexist){
-                  kbIds = page.qnamaker.kbid;
-                  console.log(kbIds);
-                }
-              }
-              if(urls.url==qnaurl){
-                foundurl=true;
-              }
-            });
-          }
+          });
         }
       });
-      console.log(foundurl + "===" + kbexist);
-      if(kbexist && !(foundurl)){
-        console.log("ADDING URL"+kbIds);
-        var addpair = JSON.stringify({
-          "add": {
-            "qnaPairs": [{
-              "answer": qnaanswer,
-              "question": qnaquestion
-            }]
-          }
+    } else {
+      console.log("Adding Pair...");
+      // Define an demo object with properties and values. This object will be used for POST request.
+      var addpair = JSON.stringify({
+        "add": {
+          "qnaPairs": [{
+            "answer": qnaanswer,
+            "question": qnaquestion
+          }]
+        }
+      });
+      request({
+        uri:"https://westus.api.cognitive.microsoft.com/qnamaker/v2.0/knowledgebases/"+kbIds,
+        method: "PATCH",
+        headers:{
+          'Ocp-Apim-Subscription-Key': secret.qnaMakerSK,
+          'Content-Type':'application/json'
+        },
+        body: addpair
+      }, function (error, response, body){
+        var train=[];
+        console.log("Training QnA URL...");
+        // Define an demo object with properties and values. This object will be used for POST request.
+        var train=JSON.stringify({
+          "feedbackRecords": [{
+            "userId": "1","userQuestion": "hi","kbQuestion": "Hi","kbAnswer": "Hello"
+          }]
         });
         request({
           uri:"https://westus.api.cognitive.microsoft.com/qnamaker/v2.0/knowledgebases/"+kbIds,
           method: "PATCH",
           headers:{
-            'Ocp-Apim-Subscription-Key': secret.qnaMakerSK,
+            'Ocp-Apim-Subscription-Key':  secret.qnaMakerSK,
             'Content-Type':'application/json'
           },
-          body: addpair
+          body: train
         }, function (error, response, body){
-            console.log(response.body);
-            var train=[];
-            console.log("Training QnA URL...");
-            // Define an demo object with properties and values. This object will be used for POST request.
-
-            var train=JSON.stringify({
-              "feedbackRecords": [{
-                "userId": "1","userQuestion": "hi","kbQuestion": "Hi","kbAnswer": "Hello"
-              }]
-            });
-            request({
-              uri:"https://westus.api.cognitive.microsoft.com/qnamaker/v2.0/knowledgebases/"+kbIds,
-              method: "PATCH",
-              headers:{
-                'Ocp-Apim-Subscription-Key':  secret.qnaMakerSK,
-                'Content-Type':'application/json'
-              },
-              body: train
-            }, function (error, response, body){
-                console.log(response.body);
-                console.log("Publishing QnA URL...");
-                // Define an demo object with properties and values. This object will be used for POST request.
-
-
-                request({
-                  uri:"https://westus.api.cognitive.microsoft.com/qnamaker/v2.0/knowledgebases/"+kbIds,
-                  method: "PUT",
-                  headers:{
-                    'Ocp-Apim-Subscription-Key':  secret.qnaMakerSK,
-                    'Content-Type':'application/json'
-                  }
-                }, function (error, response, body){
-                    console.log(response.body);
-                    Users.addQnaUrl(user_id, page_id, {url: qnaurl}, function(err, done){
-                      res.redirect("/dashboard/"+req.user.id+"/page/"+req.params.pageid);
-                    });
-                });
-            });
+          console.log(response.body);
+          console.log("Publishing QnA URL...");
+          // Define an demo object with properties and values. This object will be used for POST request.
+          request({
+            uri:"https://westus.api.cognitive.microsoft.com/qnamaker/v2.0/knowledgebases/"+kbIds,
+            method: "PUT",
+            headers:{
+              'Ocp-Apim-Subscription-Key':  secret.qnaMakerSK,
+              'Content-Type':'application/json'
+            }
+          }, function (error, response, body){
+              var pair = {
+                qnaPairs: [{
+                  answer: qnaanswer,
+                  question: qnaquestion
+                }]
+              }
+              Users.addQnaPair(user_id, page_id, pair, function(err, done){
+                res.redirect("/dashboard/"+req.user.id+"/page/"+req.params.pageid);
+              });
+          });
         });
-      }
-    });
-  }
+      });
+    }
+  });
 });
 
 
@@ -741,7 +697,7 @@ app.get('/settings/:userid', require('connect-ensure-login').ensureLoggedIn(), f
       res.render('settings', {
         user: req.user,
         curruser:curruser,
-        fbuser: user
+        fbuser: JSON.stringify(curruser)
       });
     });
   });

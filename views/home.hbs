@@ -4,12 +4,33 @@
 <div class="row">
 	{{#each pages.data}}
   <div class="col">
-    <div class="card horizontal page" style="width: 300px">
+    <div class="card page" style="width: 300px; height: 330px">
      	<form method="POST" action="/{{../user.id}}/subscribed">
+        <div class="card-image" style="height: 168px">
+        	{{#if cover}}
+          	<img src="{{cover.source}}" height="100%">
+          {{else}}
+          	<img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSXxCxQ_6HkwC7ylH3Qc6zLFiN4d1DZ7d89YaMRJtFq1xawL3gu" height="100%">
+          {{/if}}
+          <span class="card-title row">
+	          <img class="circle col s4" src="{{this.picture.data.url}}">
+	          <h5 class="col s8">{{this.name}}</h5>
+          </span>
+					{{#if this.is_webhooks_subscribed}}
+          <button class="btn-floating halfway-fab waves-effect waves-light red"><i class="material-icons">close</i></button>
+          {{else}}
+          <button class="btn-floating halfway-fab waves-effect waves-light red"><i class="material-icons">add</i></button>
+          {{/if}}
+        </div>
 		    <div class="card-content row">
-		      <img class="circle col s4" width="100%" src="{{this.picture.data.url}}">
-		      <div class="col s8">
-	      		<h5>{{this.name}}</h5>
+		      <div class="col s12">
+		      	<div style="height:30px">
+		      	{{#if about}}
+		      	<p style="text-overflow: ellipsis; overflow: hidden; max-height: 3.6em; line-height: 1.8em">{{about}}</p>
+		      	{{else}}
+		      	<br><br>
+		      	{{/if}}
+		      	</div>
 	      		<input type="hidden" name="ids" value="{{this.id}}">
 	      		<input type="hidden" name="ats" value="{{access_token}}">
 	      		<input type="hidden" name="subs" value="{{is_webhooks_subscribed}}">
@@ -17,7 +38,7 @@
 		    </div>
       	<div class="row card-action">
 					{{#if this.is_webhooks_subscribed}}
-					<a class="btn col s12" href="/dashboard/{{../user.id}}/page/{{this.id}}">View Details</a><br>
+					<a class="col s12" href="/dashboard/{{../user.id}}/page/{{this.id}}">View Details</a>
 					<!--a class="btn modal-trigger col s12" href="#{{this.id}}">View Details</a><br-->
 					{{else}}
 					<button class="btn blue col s12">Connect to Facebook</button><br>
@@ -25,7 +46,7 @@
       	</div>
       </form>
     </div>
-  </div>		  	
+  </div>
 	{{/each}}
 </div>
 {{else}}
