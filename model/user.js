@@ -26,8 +26,14 @@ var userSchema = mongoose.Schema({
 			kbid: {
 				type: String
 			},
-			urls: [{
-				url: {
+			url: {
+				type: String
+			},
+			pair: [{
+				question: {
+					type: String
+				},
+				answer: {
 					type: String
 				}
 			}]
@@ -41,9 +47,11 @@ module.exports.newUser = function(newUser, callback){
     console.log("======new User ========"+JSON.stringify(newUser));
 	newUser.save(callback);
 }
+
 module.exports.getUsers = function(callback){
 	User.find(callback);
 }
+
 module.exports.addPage = function(user_id, page, callback){
 	let query = {user_id: user_id};
 	User.update(query,
@@ -53,6 +61,7 @@ module.exports.addPage = function(user_id, page, callback){
 		}
 	}, callback);
 }
+
 module.exports.updateSubscription = function(user_id, page_id, subscribed, callback){
 	let query = {user_id: user_id, "pages.page_id": page_id};
 	User.update(query,
@@ -62,16 +71,20 @@ module.exports.updateSubscription = function(user_id, page_id, subscribed, callb
 		}
 	}, callback);
 }
+
 module.exports.getUsersWithPage = function(page_id, callback){
 	let query = {pages: {$elemMatch: {page_id: page_id}}};
 	User.findOne(query,callback);
 }
+
 module.exports.getUser = function(user_id, callback){
+	console.log("Get User: "+user_id);
 	let query = {user_id: user_id};
-	User.findOne(query,callback);
+	User.findOne(query, callback);
 }
+
 module.exports.createQna = function(user_id, page_id, qnamaker, callback){
-	console.log("creating qna");
+	console.log("Creating QNA");
 	let query = {user_id: user_id, pages: {$elemMatch: {page_id: page_id}}};
 	User.update(query, {
 		$set: {
@@ -81,11 +94,21 @@ module.exports.createQna = function(user_id, page_id, qnamaker, callback){
 }
 
 module.exports.addQnaUrl = function(user_id, page_id, url, callback){
-	console.log("replace qna");
+	console.log("Replace URL");
 	let query = {user_id: user_id, pages: {$elemMatch: {page_id: page_id}}};
 	User.update(query, {
 		$set: {
-			"pages.$.qnamaker.urls": url
+			"pages.$.qnamaker.url": url
+		}
+	},callback);
+}
+
+module.exports.addQnaPair = function(user_id, page_id, pair, callback){
+	console.log("Add Pair");
+	let query = {user_id: user_id, pages: {$elemMatch: {page_id: page_id}}};
+	User.update(query, {
+		$push: {
+			"pages.$.qnamaker.pair": pair
 		}
 	},callback);
 }

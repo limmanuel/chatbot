@@ -17,25 +17,38 @@
 					<button class="btn blue col">Connect to Facebook</button><br>
 					{{/if}}
 	  		</form><br><br>
+	  	</div>
+	  <div class="col s12">
+    <div class="card-tabs">
+      <ul class="tabs tabs-fixed-width">
+        <li class="tab"><a href="#url">Add/Change FAQ URL</a></li>
+        <li class="tab"><a href="#pair">Add Q&A Pair</a></li>
+        {{#if ../question}}
+        <li class="tab"><a class="active" href="#test">Test ChatBot</a></li>
+        {{else}}
+        <li class="tab"><a href="#test">Test ChatBot</a></li>
+        {{/if}}
+      </ul>
+    </div>
+    <div class="card-content">
+      <div id="url">
 				<form class="row" method="POST" action="/dashboard/{{../user.id}}/page/{{id}}/url">
 					{{#each ../curruser.pages}}
 						{{#equal ../id page_id}}
-							{{#if qnamaker.urls}}
-								{{#each this.qnamaker.urls}}
-									<div class="col s8">
-     								<label>QnA Url:</label>
-						  			<input type="text" name="url" value="{{url}}" placeholder="Your Q&A URL" required>
-						  			<input type="hidden" name="lasturl" value="{{url}}">
+							{{#if qnamaker.url}}
+     								<label class="col s12">QnA Url:</label>
+									<div class="col s10">
+						  			<input type="text" name="url" value="{{qnamaker.url}}" placeholder="Your Q&A URL" required>
+						  			<input type="hidden" name="lasturl" value="{{qnamaker.url}}">
 						  		</div>
-						    	<button class="col waves-effect waves-green btn-flat btn-large">Change</button>
-								{{/each}}
+						    	<button class="col s2 waves-effect waves-green btn-flat btn-large">Change</button>
 				    	{{else}}
-				    	<div class="col s8">
-     						<label>QnA Url:</label>
+     						<label class="col s12">QnA Url:</label>
+				    	<div class="col s10">
 						  	<input type="text" name="url" placeholder="Your Q&A URL" required>
 				  			<input type="hidden" name="lasturl" value="none">
-						  </div> 
-						  <button class="col waves-effect waves-green btn-flat btn-large">Add</button>
+							</div> 
+							<button class="col s2 waves-effect waves-green btn-flat btn-large">Add</button>
 						  {{/if}}
 						{{/equal}}
 					{{/each}}
@@ -43,27 +56,42 @@
 			  	<input type="hidden" name="idss" value="{{id}}">
 			  	<input type="hidden" name="name" value="{{name}}">
 				</form>
-				<div>
-				</div>
+      </div>
+      <div id="pair">
+				<form class="row" method="POST" action="/dashboard/{{../user.id}}/page/{{id}}/pair">
+ 						<label class="col s12">QnA Pair:</label>
+		    	<div class="col s12">
+				  	<input type="text" name="question" placeholder="Your Question" required>
+				  	<input type="text" name="answer" placeholder="Your Answer" required>
+					</div> 
+	  			<input type="hidden" name="subs" value="{{is_webhooks_subscribed}}">
+			  	<input type="hidden" name="idss" value="{{id}}">
+			  	<input type="hidden" name="name" value="{{name}}">
+					<button class="col s2 offset-s10 waves-effect waves-green btn-flat btn-large">Add</button>
+				</form>
+			</div>
+      <div id="test">
 				<form class="row" method="POST" action="/dashboard/{{../user.id}}/page/{{id}}/message">
-					<div class="col s8">
-	     			<label>Sample Question:</label>
+	     			<label class="col s12">Sample Question:</label>
+					<div class="col s10">
 				  	<input type="text" name="message" placeholder="Sample Question" required>
 				  	<input type="hidden" name="idss" value="{{id}}">
 				  	<input type="hidden" name="name" value="{{name}}">
 			  	</div>
-			    <button class="col waves-effect waves-green btn-flat btn-large">Send</button>
+			    <button class="col s2 waves-effect waves-green btn-flat btn-large">Send</button>
 				</form>
 
 				<div class="row">
 					{{#if ../question}}
-						<div class="col s12">Question: {{../question}}</div><br>
+						<div class="col s12"><b>Question:</b> {{../question}}</div><br>
 					{{/if}}
 					{{#if ../answer}}
-						<div class="col s12">Answer: {{../answer}}</div>
+						<div class="col s12"><b>Answer:</b> {{../answer}}</div>
 					{{/if}}
 				</div>
-			</div>
+      </div>
+    </div>
+		</div>
     </div>
   </div>
   </div>
